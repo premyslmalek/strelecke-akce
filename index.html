@@ -550,17 +550,37 @@ async function reExtract() {
 }
 
 async function callClaudeVision(key, b64, mimeType) {
-  const prompt = `Jsi expert na extrakci strukturovaných dat z pozvánek na střelecké závody v češtině.
-Analyzuj přiložený obrázek pozvánky a extrahuj VŠECHNA dostupná data. Vrať POUZE validní JSON objekt (bez markdown, bez backticks):
-{"name":"celý název soutěže","organizer":"pořadatel","contact_name":null,"phone":null,"email":null,"date":"DD.MM.YYYY","time_start":"HH:MM","time_end":null,"location":"střelnice a adresa","gps":null,"discipline":"Trap/Skeet/AT/…","scope":"2×25…","entry_fee":"XXX Kč","registration":"podmínky zápisu","training":null,"target_color":null,"ammo_available":null,"catering":null,"prizes":null,"description":"2-4 věty popis pro FB","confidence":{"name":0.0,"organizer":0.0,"date":0.0,"time_start":0.0,"location":0.0,"phone":0.0,"email":0.0,"discipline":0.0,"entry_fee":0.0,"description":0.0}}
-Confidence 0.0-1.0. Chybějící pole = null. POUZE JSON.`;
+  // Prompt in plain ASCII to avoid ISO-8859-1 header encoding issues
+  const prompt = [
+    'You are an expert at extracting structured data from Czech shooting event invitations.',
+    'Analyze the image and extract ALL available data. Return ONLY a valid JSON object (no markdown, no backticks):',
+    '{"name":"full event name","organizer":"organizer name","contact_name":null,"phone":null,"email":null,',
+    '"date":"DD.MM.YYYY","time_start":"HH:MM","time_end":null,"location":"shooting range and address",',
+    '"gps":null,"discipline":"Trap/Skeet/AT/etc","scope":"2x25 targets etc","entry_fee":"XXX CZK",',
+    '"registration":"registration conditions","training":null,"target_color":null,"ammo_available":null,',
+    '"catering":null,"prizes":null,',
+    '"description":"2-4 sentence Czech description suitable for a Facebook event post",',
+    '"confidence":{"name":0.0,"organizer":0.0,"date":0.0,"time_start":0.0,"location":0.0,',
+    '"phone":0.0,"email":0.0,"discipline":0.0,"entry_fee":0.0,"description":0.0}}',
+    'Confidence is 0.0-1.0. Missing fields = null. ONLY JSON, nothing else.',
+    'Write all extracted text values in the original Czech language as found in the image.',
+    'Generate the description field in Czech language.'
+  ].join(' ');
 
+  // Sanitize key — strip any non-ASCII characters that would break headers
+  const cleanKey = key.replace(/[^ -~]/g, '').trim();
   const safeMime = (mimeType||'image/jpeg').replace('image/jpg','image/jpeg');
+
   let resp;
   try {
     resp = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': cleanKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
       body: JSON.stringify({
         model: 'claude-sonnet-4-5',
         max_tokens: 2000,
@@ -570,7 +590,7 @@ Confidence 0.0-1.0. Chybějící pole = null. POUZE JSON.`;
         ]}]
       })
     });
-  } catch(e) { throw new Error('Síťová chyba: ' + e.message); }
+  } catch(e) { throw new Error('Network error: ' + e.message); }
 
   if (!resp.ok) {
     let msg = 'HTTP ' + resp.status;
