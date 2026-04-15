@@ -164,7 +164,7 @@ textarea{resize:vertical;min-height:80px;}
     <p class="page-sub">Přehled naposledy zpracovaných a publikovaných střeleckých akcí.</p>
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;">
       <table class="history-table">
-        <thead><tr><th>Název akce</th><th>Datum konání</th><th>Stav</th><th>Odkaz</th></tr></thead>
+        <thead><tr><th>Název akce</th><th>Datum konání</th><th>Stav</th><th>Uloženo</th><th>Akce</th></tr></thead>
         <tbody id="history-body"><tr><td colspan="4" style="text-align:center;color:var(--text3);padding:32px;">Zatím žádné záznamy</td></tr></tbody>
       </table>
     </div>
@@ -515,8 +515,11 @@ function clearFiles() {
 // ── EXTRACTION ─────────────────────────────────────────────
 async function startExtraction() {
   if (!selectedFiles.length) return;
-  const key = apiKey || localStorage.getItem('anthropic_api_key');
-  if (!key) { showSettings(); showToast('Nejprve nastav Anthropic API klíč.', 'error'); return; }
+  const rawKey = apiKey || localStorage.getItem('anthropic_api_key') || '';
+  const key = rawKey.replace(/[^\x20-\x7E]/g, '').trim();
+  if (!key) { showSettings(); showToast('Nejprve nastav Anthropic API klíč v nastavení ⚙.', 'error'); return; }
+  // Show first 12 chars in console for debugging
+  console.log('Using API key:', key.slice(0,12) + '...' + ' (length: ' + key.length + ')');
 
   showLoading('Analyzuji pozvánku…', 'Claude Vision rozpoznává text a strukturu');
   const file = selectedFiles[selectedFileIndex];
@@ -595,7 +598,7 @@ async function callClaudeVision(key, b64, mimeType) {
   if (!resp.ok) {
     let msg = 'HTTP ' + resp.status;
     try { const e = await resp.json(); msg = e.error?.message || msg;
-      if (resp.status===401) msg='Neplatný API klíč (401). Zkontroluj klíč v ⚙.';
+      if (resp.status===401) msg='Neplatný API klíč (401). Klíč začíná: ' + cleanKey.slice(0,12) + '… — zkontroluj v ⚙ zda je správně zkopírován.';
       if (resp.status===429) msg='Překročen limit (429). Chvíli počkej.';
     } catch(_) {}
     throw new Error(msg);
@@ -803,20 +806,58 @@ async function publishEvent() {
 // ── DRAFT & HISTORY ────────────────────────────────────────
 function saveDraft() {
   const g = id => document.getElementById(id)?.value||'';
-  historyData.unshift({ id:'draft_'+Date.now(), name:g('f-name'), date:g('f-date'),
-    published_at:new Date().toLocaleDateString('cs-CZ'), fb_url:null, status:'draft' });
+  const formData = {
+    name:g('f-name'), organizer:g('f-organizer'), contact_name:g('f-contact-name'),
+    phone:g('f-phone'), email:g('f-email'), date:g('f-date'), time_start:g('f-time'),
+    location:g('f-location'), gps:g('f-gps'), discipline:g('f-discipline'),
+    scope:g('f-scope'), entry_fee:g('f-fee'), registration:g('f-registration'),
+    training:g('f-training'), target_color:g('f-targets'), description:g('f-description')
+  };
+  historyData.unshift({
+    id: 'draft_'+Date.now(),
+    name: g('f-name'),
+    date: g('f-date'),
+    published_at: new Date().toLocaleDateString('cs-CZ'),
+    fb_url: null,
+    status: 'draft',
+    formData: formData
+  });
   localStorage.setItem('shooting_history', JSON.stringify(historyData.slice(0,50)));
   showToast('Uloženo jako koncept.', 'success');
 }
 
+function loadDraft(id) {
+  const record = historyData.find(r => r.id === id);
+  if (!record || !record.formData) { showToast('Data konceptu nejsou k dispozici.', 'error'); return; }
+  const d = record.formData;
+  const set = (elId, val) => { const el=document.getElementById(elId); if(el) el.value=val||''; };
+  set('f-name', d.name); set('f-organizer', d.organizer); set('f-contact-name', d.contact_name);
+  set('f-phone', d.phone); set('f-email', d.email); set('f-date', d.date);
+  set('f-time', d.time_start); set('f-location', d.location); set('f-gps', d.gps);
+  set('f-discipline', d.discipline); set('f-scope', d.scope); set('f-fee', d.entry_fee);
+  set('f-registration', d.registration); set('f-training', d.training);
+  set('f-targets', d.target_color); set('f-description', d.description);
+  goStep(2);
+  showToast('Koncept načten — zkontroluj data.', 'success');
+}
+
 function renderHistory() {
   const tbody = document.getElementById('history-body');
-  if (!historyData.length) { tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--text3);padding:32px;">Zatím žádné záznamy</td></tr>'; return; }
+  if (!historyData.length) {
+    tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:32px;">Zatím žádné záznamy</td></tr>';
+    return;
+  }
   tbody.innerHTML = historyData.map(r=>`<tr>
     <td>${r.name||'—'}</td>
     <td style="color:var(--text2)">${r.date||'—'}</td>
     <td><span class="status-tag ${r.status==='published'?'st-published':'st-draft'}">${r.status==='published'?'✓ Publikováno':'⌛ Koncept'}</span></td>
-    <td>${r.fb_url?`<a href="${r.fb_url}" target="_blank" style="color:#1877F2;text-decoration:none;">FB událost ↗</a>`:r.published_at}</td>
+    <td style="color:var(--text2)">${r.published_at||'—'}</td>
+    <td>${r.fb_url
+      ? `<a href="${r.fb_url}" target="_blank" style="color:#1877F2;text-decoration:none;font-size:13px;">Otevřít ↗</a>`
+      : (r.formData
+        ? `<button class="btn" style="font-size:12px;padding:5px 12px;" onclick="loadDraft('${r.id}')">✏️ Upravit</button>`
+        : '—')
+    }</td>
   </tr>`).join('');
 }
 
@@ -829,7 +870,16 @@ function hideLoading() { document.getElementById('loading').classList.remove('sh
 function showToast(msg,type='') { const t=document.getElementById('toast'); t.textContent=msg; t.className='toast show'+(type?' '+type:''); clearTimeout(t._timer); t._timer=setTimeout(()=>t.classList.remove('show'),4000); }
 function showSettings() { document.getElementById('settings-modal').classList.add('show'); document.getElementById('api-key-input').value=apiKey; }
 function closeSettings() { document.getElementById('settings-modal').classList.remove('show'); }
-function saveSettings() { apiKey=document.getElementById('api-key-input').value.trim(); localStorage.setItem('anthropic_api_key',apiKey); closeSettings(); showToast('API klíč uložen.','success'); }
+function saveSettings() {
+  // Strip ALL non-printable and non-ASCII chars that break HTTP headers
+  apiKey = document.getElementById('api-key-input').value
+    .replace(/[^\x20-\x7E]/g, '')
+    .trim();
+  if (!apiKey) { showToast('API klíč nesmí být prázdný.', 'error'); return; }
+  localStorage.setItem('anthropic_api_key', apiKey);
+  closeSettings();
+  showToast('API klíč uložen: ' + apiKey.slice(0,12) + '…', 'success');
+}
 
 // Restore saved page from localStorage
 window.addEventListener('DOMContentLoaded', () => {
