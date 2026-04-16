@@ -243,7 +243,7 @@ textarea{resize:vertical;min-height:72px;}
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
     <div>
       <p class="ptitle" style="margin-bottom:3px;">Publikovat na Facebook</p>
-      <p class="psub" style="margin-bottom:0;">Přihlas se a vyber stránku.</p>
+      <p class="psub" style="margin-bottom:0;">Přihlas se, vyber stránku a publikuj příspěvek.</p>
     </div>
     <button class="btn btn-gh" onclick="go(2)">← Zpět</button>
   </div>
@@ -277,12 +277,12 @@ textarea{resize:vertical;min-height:72px;}
         </div>
       </div>
 
-      <!-- visibility -->
-      <div class="card" style="margin-bottom:14px;">
-        <div style="font-size:13px;font-weight:600;margin-bottom:11px;">Viditelnost události</div>
-        <label class="ropt"><input type="radio" name="vis" value="OPEN" checked><div><div class="rt">Veřejná</div><div class="rs">Vidí všichni na Facebooku</div></div></label>
-        <label class="ropt"><input type="radio" name="vis" value="FRIENDS"><div><div class="rt">Sledující stránky</div><div class="rs">Jen fanoušci stránky</div></div></label>
-        <label class="ropt"><input type="radio" name="vis" value="UNLISTED"><div><div class="rt">Skrytá</div><div class="rs">Jen přes přímý odkaz</div></div></label>
+      <!-- info note -->
+      <div class="card" style="margin-bottom:14px;border-color:rgba(200,146,42,0.3);background:var(--yw-bg);">
+        <div style="font-size:12px;color:var(--acc2);line-height:1.5;">
+          <strong>ℹ️ Publikování jako příspěvek</strong><br>
+          Facebook uzavřel API pro vytváření Událostí pro neschválené aplikace. Akce se proto zveřejní jako příspěvek na stránce — fanoušci ji uvidí ve feedu normálně.
+        </div>
       </div>
 
       <!-- photo -->
@@ -295,7 +295,7 @@ textarea{resize:vertical;min-height:72px;}
       </div>
 
       <button class="btn btn-fb" onclick="publish()" style="width:100%;justify-content:center;padding:11px;">
-        📤 Publikovat událost
+        📤 Publikovat na stránce
       </button>
     </div>
 
@@ -669,33 +669,64 @@ async function publish() {
     g('f-email')||'',
   ].filter(Boolean).join('\n');
 
+  // Facebook Events API je uzavřeno pro neschválené aplikace.
+  // Publikujeme jako příspěvek na stránce (/feed) - funguje bez App Review.
   try {
-    const r=await fetch(`https://graph.facebook.com/${FB_VER}/${fbPageId}/events`,{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({name,description:desc,start_time:startISO,end_time:endISO,
-        location:g('f-loc'),privacy_type:vis,access_token:fbToken})
+    // Sestavení textu příspěvku
+    const postText = [
+      '📣 ' + name,
+      '',
+      g('f-date') ? '📅 ' + g('f-date') + (g('f-time') ? ' v ' + g('f-time') : '') : '',
+      g('f-loc')  ? '📍 ' + g('f-loc') : '',
+      '',
+      g('f-desc') ? g('f-desc') : '',
+      '',
+      g('f-disc') ? '🎯 Disciplína: ' + g('f-disc') + (g('f-scope') ? ' (' + g('f-scope') + ')' : '') : '',
+      g('f-fee')  ? '💰 Startovné: ' + g('f-fee') : '',
+      g('f-reg')  ? '📝 Přihlášky: ' + g('f-reg') : '',
+      g('f-train')? '🏋 Trénink: ' + g('f-train') : '',
+      '',
+      g('f-phone') ? '📞 ' + g('f-phone') : '',
+      g('f-email') ? '✉️ ' + g('f-email') : '',
+    ].filter(s => s !== null && s !== undefined && !(s === '' && postText)).join('\n').replace(/\n{3,}/g, '\n\n').trim();
+
+    const payload = {
+      message: postText,
+      access_token: fbToken
+    };
+
+    const r = await fetch(`https://graph.facebook.com/${FB_VER}/${fbPageId}/feed`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     });
-    const res=await r.json(); hideOv();
-    if(res.id){
-      history.unshift({id:res.id,name,date:dateStr,at:new Date().toLocaleDateString('cs-CZ'),
-        url:`https://www.facebook.com/events/${res.id}`,status:'published'});
-      try{localStorage.setItem('sh_hist',JSON.stringify(history.slice(0,50)));}catch(e){}
-      document.getElementById('s3').innerHTML=`
+    const res = await r.json();
+    hideOv();
+
+    if (res.id) {
+      // ID příspěvku má formát pageId_postId
+      const postId = res.id.split('_')[1] || res.id;
+      const postUrl = `https://www.facebook.com/${fbPageId}/posts/${postId}`;
+      history.unshift({ id: res.id, name, date: dateStr,
+        at: new Date().toLocaleDateString('cs-CZ'),
+        url: postUrl, status: 'published' });
+      try { localStorage.setItem('sh_hist', JSON.stringify(history.slice(0, 50))); } catch(e) {}
+      document.getElementById('s3').innerHTML = `
         <div style="max-width:520px;margin:50px auto;text-align:center;">
           <div style="font-size:52px;margin-bottom:16px;">🎉</div>
-          <div style="font-size:22px;font-weight:700;margin-bottom:8px;">Událost publikována!</div>
-          <p style="color:var(--tx2);margin-bottom:20px;">${name}</p>
+          <div style="font-size:22px;font-weight:700;margin-bottom:8px;">Příspěvek publikován!</div>
+          <p style="color:var(--tx2);margin-bottom:20px;">${name} byl úspěšně zveřejněn na stránce ${fbPageName}.</p>
           <div style="background:var(--gr-bg);border:1px solid rgba(74,140,92,.3);border-radius:var(--rl);padding:16px 20px;text-align:left;margin-bottom:20px;">
-            <div style="font-size:14px;font-weight:600;color:var(--gr);">Událost je živá</div>
-            <div style="font-size:12px;color:var(--tx2);margin:3px 0;">ID: ${res.id}</div>
-            <a href="https://www.facebook.com/events/${res.id}" target="_blank" style="color:#1877F2;font-size:13px;">Otevřít na Facebooku →</a>
+            <div style="font-size:14px;font-weight:600;color:var(--gr);">Příspěvek je živý</div>
+            <div style="font-size:12px;color:var(--tx2);margin:3px 0 8px;">ID: ${res.id}</div>
+            <a href="${postUrl}" target="_blank" style="color:#1877F2;font-size:13px;text-decoration:none;">Otevřít na Facebooku →</a>
           </div>
           <button class="btn btn-acc" onclick="location.reload()">Zpracovat další pozvánku</button>
         </div>`;
     } else {
-      toast('FB chyba: '+(res.error?.message||JSON.stringify(res)),'er');
+      toast('FB chyba: ' + (res.error?.message || JSON.stringify(res)), 'er');
     }
-  } catch(e){ hideOv(); toast('Chyba: '+e.message,'er'); }
+  } catch(e) { hideOv(); toast('Chyba: ' + e.message, 'er'); }
 }
 
 // ── DRAFT & HISTORY ────────────────────────────────────────
