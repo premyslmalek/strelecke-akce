@@ -606,7 +606,7 @@ function fbLogin() {
   FB.login(r => {
     if (r.authResponse) loadPages(r.authResponse.accessToken);
     else toast('Přihlášení zrušeno.','er');
-  }, { scope: 'pages_manage_posts,pages_manage_events,pages_read_engagement' });
+  }, { scope: 'pages_manage_posts,pages_read_engagement,pages_show_list' });
 }
 
 function loadPages(userToken) {
