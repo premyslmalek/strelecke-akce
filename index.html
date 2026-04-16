@@ -3,893 +3,758 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Střelecké akce — Publisher</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>Střelecké akce</title>
 <style>
-:root {
-  --bg:#0f0e0d;--surface:#1a1917;--surface2:#242320;--surface3:#2e2c29;
-  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
-  --accent:#c8922a;--accent2:#e6b060;--accent-dim:rgba(200,146,42,0.12);
-  --text:#f0ede8;--text2:#a09890;--text3:#6a6560;
-  --green:#4a8c5c;--green-bg:rgba(74,140,92,0.12);
-  --red:#c0453a;--red-bg:rgba(192,69,58,0.12);
-  --yellow-bg:rgba(200,146,42,0.1);
-  --radius:10px;--radius-lg:16px;
+:root{
+  --bg:#0f0e0d;--sur:#1a1917;--sur2:#242320;--sur3:#2e2c29;
+  --b:rgba(255,255,255,0.08);--b2:rgba(255,255,255,0.14);
+  --acc:#c8922a;--acc2:#e6b060;--acc-d:rgba(200,146,42,0.12);
+  --tx:#f0ede8;--tx2:#a09890;--tx3:#6a6560;
+  --gr:#4a8c5c;--gr-bg:rgba(74,140,92,0.12);
+  --rd:#c0453a;--rd-bg:rgba(192,69,58,0.12);
+  --yw-bg:rgba(200,146,42,0.1);
+  --r:10px;--rl:16px;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.6;}
-.app{display:flex;flex-direction:column;min-height:100vh;}
-header{border-bottom:1px solid var(--border);padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between;background:var(--surface);position:sticky;top:0;z-index:100;}
-.logo{font-family:'Playfair Display',serif;font-size:18px;color:var(--accent2);letter-spacing:.02em;display:flex;align-items:center;gap:10px;}
-.logo-icon{width:28px;height:28px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;}
-.step-indicator{display:flex;background:var(--surface2);border:1px solid var(--border);border-radius:999px;padding:3px;font-size:12px;}
-.step-pill{padding:4px 14px;border-radius:999px;color:var(--text3);font-weight:500;transition:all .25s;}
-.step-pill.active{background:var(--accent);color:#fff;}
-.step-pill.done{color:var(--green);}
-main{flex:1;padding:32px;max-width:1100px;margin:0 auto;width:100%;}
-.page-title{font-family:'Playfair Display',serif;font-size:30px;margin-bottom:6px;line-height:1.25;}
-.page-sub{color:var(--text2);font-size:14px;margin-bottom:32px;}
-.upload-zone{border:2px dashed var(--border2);border-radius:var(--radius-lg);padding:60px 40px;text-align:center;cursor:pointer;transition:all .25s;background:var(--surface);position:relative;}
-.upload-zone:hover,.upload-zone.drag-over{border-color:var(--accent);background:var(--accent-dim);}
-.upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;}
-.upload-icon{width:56px;height:56px;background:var(--surface2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:24px;}
-.upload-title{font-size:16px;font-weight:600;margin-bottom:6px;}
-.upload-sub{color:var(--text2);font-size:13px;}
-.upload-formats{margin-top:12px;display:flex;gap:6px;justify-content:center;}
-.format-tag{padding:3px 10px;border-radius:999px;background:var(--surface2);border:1px solid var(--border2);font-size:11px;color:var(--text2);font-weight:500;}
-.selected-files{margin-top:20px;display:flex;gap:12px;flex-wrap:wrap;}
-.file-thumb{width:100px;height:130px;border-radius:var(--radius);border:1px solid var(--border2);overflow:hidden;position:relative;background:var(--surface2);cursor:pointer;transition:border-color .2s;flex-shrink:0;}
-.file-thumb:hover,.file-thumb.selected{border-color:var(--accent);}
-.file-thumb img{width:100%;height:80%;object-fit:cover;display:block;}
-.file-thumb .thumb-name{padding:4px 6px;font-size:10px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--surface2);border-top:1px solid var(--border);line-height:1.4;}
-.file-thumb .thumb-check{position:absolute;top:5px;right:5px;width:20px;height:20px;background:var(--accent);border-radius:50%;display:none;align-items:center;justify-content:center;font-size:11px;color:#fff;}
-.file-thumb.selected .thumb-check{display:flex;}
-.btn{padding:9px 20px;border-radius:var(--radius);font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:var(--surface2);color:var(--text);transition:all .18s;font-family:'DM Sans',sans-serif;display:inline-flex;align-items:center;gap:7px;}
-.btn:hover{background:var(--surface3);}
-.btn:active{transform:scale(0.98);}
-.btn-accent{background:var(--accent);border-color:var(--accent);color:#fff;}
-.btn-accent:hover{background:var(--accent2);border-color:var(--accent2);color:#111;}
-.btn-accent:disabled{opacity:.45;cursor:not-allowed;}
-.btn-ghost{background:transparent;border-color:transparent;color:var(--text2);}
-.btn-ghost:hover{color:var(--text);background:var(--surface2);}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.6;min-height:100vh;}
+/* header */
+.hdr{border-bottom:1px solid var(--b);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;background:var(--sur);position:sticky;top:0;z-index:50;}
+.logo{font-size:17px;font-weight:700;color:var(--acc2);display:flex;align-items:center;gap:8px;}
+.logo-ic{width:26px;height:26px;background:var(--acc);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;}
+.steps{display:flex;background:var(--sur2);border:1px solid var(--b);border-radius:999px;padding:3px;font-size:11px;}
+.sp{padding:3px 12px;border-radius:999px;color:var(--tx3);font-weight:500;transition:all .2s;}
+.sp.on{background:var(--acc);color:#fff;}
+.sp.dn{color:var(--gr);}
+/* main */
+main{padding:24px;max-width:1000px;margin:0 auto;}
+.ptitle{font-size:24px;font-weight:700;margin-bottom:4px;}
+.psub{color:var(--tx2);font-size:13px;margin-bottom:24px;}
+/* upload */
+.upzone{border:2px dashed var(--b2);border-radius:var(--rl);padding:48px 32px;text-align:center;cursor:pointer;transition:all .2s;background:var(--sur);position:relative;}
+.upzone:hover,.upzone.over{border-color:var(--acc);background:var(--acc-d);}
+.upzone input{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.upic{width:48px;height:48px;background:var(--sur2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:22px;}
+/* buttons */
+.btn{padding:8px 18px;border-radius:var(--r);font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--b2);background:var(--sur2);color:var(--tx);transition:all .15s;display:inline-flex;align-items:center;gap:6px;font-family:inherit;}
+.btn:hover{background:var(--sur3);}
+.btn:active{transform:scale(.98);}
+.btn-acc{background:var(--acc);border-color:var(--acc);color:#fff;}
+.btn-acc:hover{background:var(--acc2);color:#111;}
+.btn-gh{background:transparent;border-color:transparent;color:var(--tx2);}
+.btn-gh:hover{color:var(--tx);background:var(--sur2);}
 .btn-fb{background:#1877F2;border-color:#1877F2;color:#fff;}
-.btn-fb:hover{background:#1464D0;border-color:#1464D0;}
-.btn-row{display:flex;gap:10px;align-items:center;margin-top:24px;}
-.conf-row{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:12px;}
-.conf-label{color:var(--text3);width:80px;flex-shrink:0;}
-.conf-bar-wrap{flex:1;height:4px;background:var(--surface3);border-radius:2px;}
-.conf-bar{height:4px;border-radius:2px;background:var(--green);transition:width .5s ease;}
-.conf-bar.med{background:var(--accent);}
-.conf-bar.low{background:var(--red);}
-.conf-pct{font-size:11px;color:var(--text3);width:32px;text-align:right;}
-.conf-badge{font-size:10px;padding:1px 7px;border-radius:999px;font-weight:600;}
-.conf-high{background:var(--green-bg);color:var(--green);}
-.conf-med{background:var(--yellow-bg);color:var(--accent2);}
-.conf-low{background:var(--red-bg);color:var(--red);}
-.loading-overlay{display:none;position:fixed;inset:0;background:rgba(15,14,13,0.85);z-index:200;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
-.loading-overlay.show{display:flex;}
-.spinner{width:44px;height:44px;border:3px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg)}}
-.loading-text{color:var(--text2);font-size:14px;}
-.loading-detail{color:var(--text3);font-size:12px;}
-.fb-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;max-width:520px;margin:0 auto 24px;}
-.fb-header-bar{background:#1877F2;padding:10px 14px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:#fff;}
-.fb-cover-area{height:120px;background:linear-gradient(135deg,#1a2e1a 0%,#2d4a2d 50%,#3d5a30 100%);display:flex;align-items:center;justify-content:center;overflow:hidden;}
-.fb-cover-area img{width:100%;height:100%;object-fit:cover;}
-.fb-cover-placeholder{color:rgba(255,255,255,.35);font-size:12px;}
-.fb-body-area{padding:14px 16px;}
-.fb-event-title{font-size:16px;font-weight:600;margin-bottom:8px;}
-.fb-meta-line{display:flex;align-items:flex-start;gap:8px;margin-bottom:5px;font-size:13px;color:var(--text2);}
-.fb-meta-icon{font-size:14px;flex-shrink:0;margin-top:1px;}
-.fb-desc{font-size:13px;color:var(--text2);margin-top:10px;padding-top:10px;border-top:1px solid var(--border);line-height:1.55;}
-.radio-option{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:var(--radius);border:1px solid var(--border);margin-bottom:8px;cursor:pointer;transition:border-color .18s,background .18s;}
-.radio-option:hover{border-color:var(--border2);background:var(--surface2);}
-.radio-option input[type="radio"]{margin-top:3px;accent-color:var(--accent);}
-.ro-title{font-size:13px;font-weight:500;}
-.ro-sub{font-size:12px;color:var(--text3);margin-top:2px;}
-.success-title{font-size:16px;font-weight:600;color:var(--green);}
-.success-sub{font-size:13px;color:var(--text2);margin-top:3px;}
-.success-link{color:#1877F2;font-size:13px;text-decoration:none;}
-.success-link:hover{text-decoration:underline;}
-.toast{position:fixed;bottom:24px;right:24px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 18px;font-size:13px;color:var(--text);display:flex;align-items:flex-start;gap:10px;transform:translateY(80px);opacity:0;transition:all .3s ease;z-index:999;max-width:420px;line-height:1.5;word-break:break-word;}
-.toast.show{transform:translateY(0);opacity:1;}
-.toast.success{border-left:3px solid var(--green);}
-.toast.error{border-left:3px solid var(--red);}
-.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;align-items:center;justify-content:center;}
-.modal-backdrop.show{display:flex;}
-.modal{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:28px;max-width:460px;width:90%;}
-.modal h2{font-size:17px;font-weight:600;margin-bottom:6px;}
-.modal p{font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.5;}
-.avatar-circle{width:36px;height:36px;background:#1877F2;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:600;flex-shrink:0;}
-.tabs{display:flex;gap:2px;margin-bottom:20px;background:var(--surface2);padding:3px;border-radius:var(--radius);width:fit-content;}
-.tab{padding:6px 16px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;color:var(--text3);transition:all .18s;border:none;background:transparent;font-family:'DM Sans',sans-serif;}
-.tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.3);}
-.history-table{width:100%;border-collapse:collapse;}
-.history-table th{text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);padding:0 12px 10px;border-bottom:1px solid var(--border);}
-.history-table td{padding:12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle;}
-.history-table tr:last-child td{border-bottom:none;}
-.status-tag{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600;}
-.st-published{background:var(--green-bg);color:var(--green);}
-.st-draft{background:var(--yellow-bg);color:var(--accent2);}
-input[type="text"],input[type="email"],input[type="tel"],input[type="password"],textarea,select{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:8px 12px;width:100%;transition:border-color .18s;outline:none;}
-input:focus,textarea:focus,select:focus{border-color:var(--accent);}
-textarea{resize:vertical;min-height:80px;}
-@media(max-width:700px){main{padding:16px;}.two-col{grid-template-columns:1fr!important;}.publish-grid{grid-template-columns:1fr!important;}}
+.btn-fb:hover{background:#1464D0;}
+/* form */
+.card{background:var(--sur);border:1px solid var(--b);border-radius:var(--rl);padding:20px;}
+.sec-hd{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--tx3);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--b);}
+label.fl{font-size:12px;font-weight:500;color:var(--tx2);display:flex;align-items:center;gap:5px;margin-bottom:4px;}
+input,textarea{background:var(--sur2);border:1px solid var(--b2);border-radius:var(--r);color:var(--tx);font-family:inherit;font-size:13px;padding:7px 10px;width:100%;outline:none;transition:border-color .15s;}
+input:focus,textarea:focus{border-color:var(--acc);}
+textarea{resize:vertical;min-height:72px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.sp2{grid-column:span 2;}
+/* confidence */
+.cb{font-size:10px;padding:1px 6px;border-radius:999px;font-weight:600;}
+.cb-h{background:var(--gr-bg);color:var(--gr);}
+.cb-m{background:var(--yw-bg);color:var(--acc2);}
+.cb-l{background:var(--rd-bg);color:var(--rd);}
+.cr{display:flex;align-items:center;gap:6px;margin-top:6px;font-size:11px;}
+.crb{flex:1;height:3px;background:var(--sur3);border-radius:2px;}
+.crbi{height:3px;border-radius:2px;background:var(--gr);}
+.crbi.m{background:var(--acc);}
+.crbi.l{background:var(--rd);}
+/* spinner */
+.overlay{display:none;position:fixed;inset:0;background:rgba(10,9,8,.88);z-index:200;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
+.overlay.on{display:flex;}
+.spin{width:40px;height:40px;border:3px solid var(--b2);border-top-color:var(--acc);border-radius:50%;animation:sp .8s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg)}}
+/* toast */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--sur2);border:1px solid var(--b2);border-radius:var(--r);padding:11px 16px;font-size:13px;color:var(--tx);transform:translateY(70px);opacity:0;transition:all .25s;z-index:999;max-width:380px;line-height:1.5;word-break:break-word;}
+.toast.on{transform:translateY(0);opacity:1;}
+.toast.ok{border-left:3px solid var(--gr);}
+.toast.er{border-left:3px solid var(--rd);}
+/* fb preview */
+.fbcard{background:var(--sur);border:1px solid var(--b);border-radius:var(--rl);overflow:hidden;}
+.fbhdr{background:#1877F2;padding:9px 13px;display:flex;align-items:center;gap:7px;font-size:12px;font-weight:500;color:#fff;}
+.fbcov{height:100px;background:linear-gradient(135deg,#1a2e1a,#3d5a30);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.fbcov img{width:100%;height:100%;object-fit:cover;}
+.fbbody{padding:12px 14px;}
+.fbtitle{font-size:15px;font-weight:600;margin-bottom:6px;}
+.fbmeta{display:flex;gap:6px;margin-bottom:4px;font-size:12px;color:var(--tx2);}
+.fbdesc{font-size:12px;color:var(--tx2);margin-top:8px;padding-top:8px;border-top:1px solid var(--b);line-height:1.5;}
+/* modal */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;align-items:center;justify-content:center;}
+.modal-bg.on{display:flex;}
+.modal{background:var(--sur);border:1px solid var(--b2);border-radius:var(--rl);padding:24px;max-width:420px;width:90%;}
+.modal h2{font-size:16px;font-weight:600;margin-bottom:6px;}
+.modal p{font-size:13px;color:var(--tx2);margin-bottom:14px;line-height:1.5;}
+/* tabs */
+.tabs{display:flex;gap:2px;margin-bottom:20px;background:var(--sur2);padding:3px;border-radius:var(--r);width:fit-content;}
+.tab{padding:5px 14px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;color:var(--tx3);border:none;background:transparent;font-family:inherit;transition:all .15s;}
+.tab.on{background:var(--sur);color:var(--tx);box-shadow:0 1px 4px rgba(0,0,0,.3);}
+/* history */
+.htbl{width:100%;border-collapse:collapse;}
+.htbl th{text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--tx3);padding:0 10px 8px;border-bottom:1px solid var(--b);}
+.htbl td{padding:10px;border-bottom:1px solid var(--b);font-size:13px;vertical-align:middle;}
+.htbl tr:last-child td{border-bottom:none;}
+.stag{display:inline-flex;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:600;}
+.s-pub{background:var(--gr-bg);color:var(--gr);}
+.s-dft{background:var(--yw-bg);color:var(--acc2);}
+/* radio */
+.ropt{display:flex;align-items:flex-start;gap:9px;padding:9px 11px;border-radius:var(--r);border:1px solid var(--b);margin-bottom:7px;cursor:pointer;transition:all .15s;}
+.ropt:hover{border-color:var(--b2);background:var(--sur2);}
+.ropt input{margin-top:3px;accent-color:var(--acc);}
+.rt{font-size:13px;font-weight:500;}
+.rs{font-size:11px;color:var(--tx3);margin-top:1px;}
+/* avatar */
+.av{width:32px;height:32px;background:#1877F2;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:600;flex-shrink:0;}
+@media(max-width:650px){.g2,.g3{grid-template-columns:1fr!important;}.sp2{grid-column:span 1!important;}.pub-grid{grid-template-columns:1fr!important;}}
 </style>
 </head>
 <body>
-<div class="app">
 
-<header>
-  <div class="logo"><div class="logo-icon">🎯</div>Střelecké akce</div>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <div class="step-indicator">
-      <div class="step-pill active" id="sp1">1 Pozvánka</div>
-      <div class="step-pill" id="sp2">2 Validace</div>
-      <div class="step-pill" id="sp3">3 Publikace</div>
+<div class="hdr">
+  <div class="logo"><div class="logo-ic">🎯</div>Střelecké akce</div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="steps">
+      <div class="sp on" id="sp1">1 Pozvánka</div>
+      <div class="sp" id="sp2">2 Validace</div>
+      <div class="sp" id="sp3">3 Publikace</div>
     </div>
-    <button class="btn btn-ghost" onclick="showSettings()" title="Nastavení">⚙</button>
+    <button class="btn btn-gh" onclick="openSettings()" style="padding:6px 10px;">⚙</button>
   </div>
-</header>
+</div>
 
 <main>
 
 <!-- STEP 1 -->
-<div id="step-upload">
+<div id="s1">
   <div class="tabs">
-    <button class="tab active" onclick="switchMainTab('upload')">Nová akce</button>
-    <button class="tab" onclick="switchMainTab('history')">Historie</button>
+    <button class="tab on" onclick="swTab('upload')">Nová akce</button>
+    <button class="tab" onclick="swTab('history')">Historie</button>
   </div>
-  <div id="tab-upload">
-    <p class="page-title">Načíst pozvánku</p>
-    <p class="page-sub">Nahraj fotografii nebo sken pozvánky — aplikace automaticky rozpozná všechna data.</p>
-    <div class="upload-zone" id="dropzone">
-      <input type="file" id="file-input" accept="image/*" multiple onchange="handleFiles(this.files)">
-      <div class="upload-icon">📄</div>
-      <div class="upload-title">Přetáhni pozvánku sem nebo klikni pro výběr</div>
-      <div class="upload-sub">Podporované formáty: fotografie telefonem, sken</div>
-      <div class="upload-formats">
-        <span class="format-tag">JPG</span><span class="format-tag">PNG</span><span class="format-tag">WebP</span>
-      </div>
+
+  <div id="t-upload">
+    <p class="ptitle">Načíst pozvánku</p>
+    <p class="psub">Nahraj fotografii pozvánky — AI automaticky rozpozná všechna data.</p>
+    <div class="upzone" id="dz">
+      <input type="file" id="fi" accept="image/*" onchange="onFiles(this.files)">
+      <div class="upic">📄</div>
+      <div style="font-size:15px;font-weight:600;margin-bottom:5px;">Přetáhni pozvánku nebo klikni pro výběr</div>
+      <div style="color:var(--tx2);font-size:13px;">JPG, PNG, WebP — fotografie telefonem nebo sken</div>
     </div>
-    <div class="selected-files" id="selected-files"></div>
-    <div class="btn-row" id="upload-actions" style="display:none;">
-      <button class="btn btn-accent" onclick="startExtraction()">🔍 Analyzovat pozvánku</button>
-      <button class="btn btn-ghost" onclick="clearFiles()">Zrušit</button>
+    <div id="thumbs" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;"></div>
+    <div id="upload-btns" style="display:none;margin-top:18px;display:none;gap:10px;">
+      <button class="btn btn-acc" onclick="extract()">🔍 Analyzovat pozvánku</button>
+      <button class="btn btn-gh" onclick="clearF()">Zrušit</button>
     </div>
   </div>
-  <div id="tab-history" style="display:none;">
-    <p class="page-title">Historie akcí</p>
-    <p class="page-sub">Přehled naposledy zpracovaných a publikovaných střeleckých akcí.</p>
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;">
-      <table class="history-table">
-        <thead><tr><th>Název akce</th><th>Datum konání</th><th>Stav</th><th>Uloženo</th><th>Akce</th></tr></thead>
-        <tbody id="history-body"><tr><td colspan="4" style="text-align:center;color:var(--text3);padding:32px;">Zatím žádné záznamy</td></tr></tbody>
+
+  <div id="t-history" style="display:none;">
+    <p class="ptitle">Historie akcí</p>
+    <p class="psub">Přehled zpracovaných a publikovaných akcí.</p>
+    <div class="card" style="padding:0;overflow:hidden;">
+      <table class="htbl">
+        <thead><tr><th>Název</th><th>Datum</th><th>Stav</th><th>Akce</th></tr></thead>
+        <tbody id="htbody"></tbody>
       </table>
     </div>
   </div>
 </div>
 
 <!-- STEP 2 -->
-<div id="step-validate" style="display:none;">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
+<div id="s2" style="display:none;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
     <div>
-      <p class="page-title" style="margin-bottom:4px;">Zkontroluj extrahovaná data</p>
-      <p class="page-sub" style="margin-bottom:0;">Překontroluj a případně uprav data před publikací na Facebook.</p>
+      <p class="ptitle" style="margin-bottom:3px;">Zkontroluj extrahovaná data</p>
+      <p class="psub" style="margin-bottom:0;">Uprav případné chyby před publikací.</p>
     </div>
     <div style="display:flex;gap:8px;">
-      <button class="btn btn-ghost" onclick="goStep(1)">← Zpět</button>
-      <button class="btn btn-ghost" onclick="reExtract()">↺ Načíst znovu</button>
+      <button class="btn btn-gh" onclick="go(1)">← Zpět</button>
+      <button class="btn btn-gh" onclick="extract()">↺ Znovu načíst</button>
     </div>
   </div>
-  <div style="display:grid;grid-template-columns:240px 1fr;gap:20px;align-items:start;">
-    <!-- image thumb -->
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;">
-      <div id="preview-img-wrap" style="width:100%;min-height:180px;background:var(--surface2);display:flex;align-items:center;justify-content:center;">
-        <img id="preview-img" src="" alt="Pozvánka" style="width:100%;display:none;object-fit:contain;">
-        <span id="preview-placeholder" style="font-size:28px;">🖼</span>
+
+  <div style="display:grid;grid-template-columns:220px 1fr;gap:16px;align-items:start;">
+    <!-- thumb + confidence -->
+    <div class="card" style="padding:0;overflow:hidden;">
+      <div id="prev-wrap" style="min-height:160px;background:var(--sur2);display:flex;align-items:center;justify-content:center;">
+        <img id="prev-img" src="" style="width:100%;display:none;object-fit:contain;">
+        <span id="prev-ph" style="font-size:28px;">🖼</span>
       </div>
-      <div style="padding:12px 14px;border-top:1px solid var(--border);">
-        <div id="preview-filename" style="font-size:12px;color:var(--text2);margin-bottom:10px;">—</div>
-        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:8px;">Jistota extrakce</div>
-        <div id="conf-bars"></div>
+      <div style="padding:10px 12px;">
+        <div id="prev-fn" style="font-size:11px;color:var(--tx2);margin-bottom:8px;word-break:break-all;">—</div>
+        <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--tx3);margin-bottom:4px;">Jistota extrakce</div>
+        <div id="cbars"></div>
       </div>
     </div>
+
     <!-- form -->
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;">
-      <div style="font-size:15px;font-weight:600;margin-bottom:4px;">📋 Extrahovaná data</div>
-      <div style="font-size:13px;color:var(--text2);margin-bottom:20px;">Pole označená <span class="conf-badge conf-low" style="font-size:10px;">!</span> vyžadují ruční kontrolu.</div>
+    <div class="card">
+      <div style="font-size:14px;font-weight:600;margin-bottom:3px;">📋 Extrahovaná data</div>
+      <div style="font-size:12px;color:var(--tx2);margin-bottom:16px;">Pole <span class="cb cb-l">!</span> vyžadují kontrolu.</div>
 
-      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);">Základní informace</div>
-      <div style="display:grid;gap:10px;margin-bottom:20px;">
-        <div>
-          <label style="font-size:12px;font-weight:500;color:var(--text2);display:flex;align-items:center;gap:6px;margin-bottom:5px;">Název akce <span class="conf-badge" id="cf-name"></span></label>
-          <input type="text" id="f-name" placeholder="Název soutěže / závodu" style="width:100%;">
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-          <div>
-            <label style="font-size:12px;font-weight:500;color:var(--text2);display:flex;align-items:center;gap:6px;margin-bottom:5px;">Pořadatel <span class="conf-badge" id="cf-organizer"></span></label>
-            <input type="text" id="f-organizer" placeholder="Organizace / spolek" style="width:100%;">
-          </div>
-          <div>
-            <label style="font-size:12px;font-weight:500;color:var(--text2);display:block;margin-bottom:5px;">Kontaktní osoba</label>
-            <input type="text" id="f-contact-name" placeholder="Jméno, titul" style="width:100%;">
-          </div>
-          <div>
-            <label style="font-size:12px;font-weight:500;color:var(--text2);display:flex;align-items:center;gap:6px;margin-bottom:5px;">Telefon <span class="conf-badge" id="cf-phone"></span></label>
-            <input type="tel" id="f-phone" placeholder="+420 xxx xxx xxx" style="width:100%;">
-          </div>
-          <div>
-            <label style="font-size:12px;font-weight:500;color:var(--text2);display:flex;align-items:center;gap:6px;margin-bottom:5px;">E-mail <span class="conf-badge" id="cf-email"></span></label>
-            <input type="email" id="f-email" placeholder="kontakt@example.cz" style="width:100%;">
-          </div>
+      <div class="sec-hd" style="margin-top:0;">Základní informace</div>
+      <div style="display:grid;gap:9px;margin-bottom:16px;">
+        <div><label class="fl">Název akce <span class="cb" id="cf-name"></span></label><input id="f-name" placeholder="Název soutěže"></div>
+        <div class="g2">
+          <div><label class="fl">Pořadatel <span class="cb" id="cf-org"></span></label><input id="f-org" placeholder="Organizace / spolek"></div>
+          <div><label class="fl">Kontaktní osoba</label><input id="f-contact" placeholder="Jméno, titul"></div>
+          <div><label class="fl">Telefon <span class="cb" id="cf-phone"></span></label><input id="f-phone" placeholder="+420 xxx xxx xxx"></div>
+          <div><label class="fl">E-mail <span class="cb" id="cf-email"></span></label><input id="f-email" placeholder="kontakt@example.cz"></div>
         </div>
       </div>
 
-      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);">Datum a místo</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">
-        <div>
-          <label style="font-size:12px;font-weight:500;color:var(--text2);display:flex;align-items:center;gap:6px;margin-bottom:5px;">Datum konání <span class="conf-badge" id="cf-date"></span></label>
-          <input type="text" id="f-date" placeholder="DD.MM.RRRR" style="width:100%;">
-        </div>
-        <div>
-          <label style="font-size:12px;font-weight:500;color:var(--text2);display:flex;align-items:center;gap:6px;margin-bottom:5px;">Čas začátku <span class="conf-badge" id="cf-time"></span></label>
-          <input type="text" id="f-time" placeholder="HH:MM" style="width:100%;">
-        </div>
-        <div style="grid-column:span 2;">
-          <label style="font-size:12px;font-weight:500;color:var(--text2);display:flex;align-items:center;gap:6px;margin-bottom:5px;">Místo konání <span class="conf-badge" id="cf-location"></span></label>
-          <input type="text" id="f-location" placeholder="Název střelnice, adresa" style="width:100%;">
-        </div>
-        <div style="grid-column:span 2;">
-          <label style="font-size:12px;font-weight:500;color:var(--text2);display:block;margin-bottom:5px;">GPS souřadnice</label>
-          <input type="text" id="f-gps" placeholder="N 00°00'000'', E 000°00'000''" style="width:100%;">
-        </div>
+      <div class="sec-hd">Datum a místo</div>
+      <div class="g2" style="margin-bottom:16px;">
+        <div><label class="fl">Datum konání <span class="cb" id="cf-date"></span></label><input id="f-date" placeholder="DD.MM.RRRR"></div>
+        <div><label class="fl">Čas začátku <span class="cb" id="cf-time"></span></label><input id="f-time" placeholder="HH:MM"></div>
+        <div class="sp2"><label class="fl">Místo konání <span class="cb" id="cf-loc"></span></label><input id="f-loc" placeholder="Střelnice, adresa"></div>
+        <div class="sp2"><label class="fl">GPS</label><input id="f-gps" placeholder="N 49°…"></div>
       </div>
 
-      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);">Soutěžní podmínky</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px;">
-        <div>
-          <label style="font-size:12px;font-weight:500;color:var(--text2);display:flex;align-items:center;gap:6px;margin-bottom:5px;">Disciplína <span class="conf-badge" id="cf-discipline"></span></label>
-          <input type="text" id="f-discipline" placeholder="Trap, Skeet, AT…" style="width:100%;">
-        </div>
-        <div>
-          <label style="font-size:12px;font-weight:500;color:var(--text2);display:block;margin-bottom:5px;">Rozsah soutěže</label>
-          <input type="text" id="f-scope" placeholder="2×25, 50 terčů…" style="width:100%;">
-        </div>
-        <div>
-          <label style="font-size:12px;font-weight:500;color:var(--text2);display:flex;align-items:center;gap:6px;margin-bottom:5px;">Startovné <span class="conf-badge" id="cf-fee"></span></label>
-          <input type="text" id="f-fee" placeholder="XXX Kč" style="width:100%;">
-        </div>
-        <div>
-          <label style="font-size:12px;font-weight:500;color:var(--text2);display:block;margin-bottom:5px;">Registrace</label>
-          <input type="text" id="f-registration" placeholder="čas, místo zápisu" style="width:100%;">
-        </div>
-        <div>
-          <label style="font-size:12px;font-weight:500;color:var(--text2);display:block;margin-bottom:5px;">Trénink</label>
-          <input type="text" id="f-training" placeholder="datum, čas, cena" style="width:100%;">
-        </div>
-        <div>
-          <label style="font-size:12px;font-weight:500;color:var(--text2);display:block;margin-bottom:5px;">Barva terčů</label>
-          <input type="text" id="f-targets" placeholder="oranžová…" style="width:100%;">
-        </div>
+      <div class="sec-hd">Soutěžní podmínky</div>
+      <div class="g3" style="margin-bottom:16px;">
+        <div><label class="fl">Disciplína <span class="cb" id="cf-disc"></span></label><input id="f-disc" placeholder="Trap, Skeet, AT…"></div>
+        <div><label class="fl">Rozsah</label><input id="f-scope" placeholder="2×25 terčů…"></div>
+        <div><label class="fl">Startovné <span class="cb" id="cf-fee"></span></label><input id="f-fee" placeholder="XXX Kč"></div>
+        <div><label class="fl">Registrace</label><input id="f-reg" placeholder="čas, místo zápisu"></div>
+        <div><label class="fl">Trénink</label><input id="f-train" placeholder="datum, čas, cena"></div>
+        <div><label class="fl">Barva terčů</label><input id="f-targets" placeholder="oranžová…"></div>
       </div>
 
-      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);">Popis pro Facebook</div>
-      <div style="margin-bottom:20px;">
-        <label style="font-size:12px;font-weight:500;color:var(--text2);display:flex;align-items:center;gap:6px;margin-bottom:5px;">Text příspěvku <span class="conf-badge" id="cf-desc"></span></label>
-        <textarea id="f-description" rows="5" placeholder="Popis akce…" style="width:100%;"></textarea>
+      <div class="sec-hd">Popis pro Facebook</div>
+      <div style="margin-bottom:16px;">
+        <label class="fl">Text příspěvku <span class="cb" id="cf-desc"></span></label>
+        <textarea id="f-desc" rows="4" placeholder="Popis akce…"></textarea>
       </div>
 
-      <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
         <button class="btn" onclick="saveDraft()">💾 Uložit koncept</button>
-        <button class="btn btn-accent" onclick="goPublish()">Náhled a publikace →</button>
+        <button class="btn btn-acc" onclick="goPublish()">Náhled a publikace →</button>
       </div>
     </div>
   </div>
 </div>
 
 <!-- STEP 3 -->
-<div id="step-publish" style="display:none;">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+<div id="s3" style="display:none;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
     <div>
-      <p class="page-title" style="margin-bottom:4px;">Publikovat na Facebook</p>
-      <p class="page-sub" style="margin-bottom:0;">Přihlas se přes Facebook, vyber stránku a potvrď publikaci.</p>
+      <p class="ptitle" style="margin-bottom:3px;">Publikovat na Facebook</p>
+      <p class="psub" style="margin-bottom:0;">Přihlas se a vyber stránku.</p>
     </div>
-    <button class="btn btn-ghost" onclick="goStep(2)">← Zpět k datům</button>
+    <button class="btn btn-gh" onclick="go(2)">← Zpět</button>
   </div>
 
-  <div style="display:grid;grid-template-columns:1fr 520px;gap:24px;align-items:start;max-width:960px;">
-
-    <!-- left config -->
+  <div class="pub-grid" style="display:grid;grid-template-columns:1fr 460px;gap:20px;align-items:start;">
     <div>
-      <!-- FB Connect -->
-      <div id="fb-connect-box" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;">
-
-        <!-- Step A: login button -->
-        <div id="fb-step-login">
+      <!-- FB connect -->
+      <div class="card" style="margin-bottom:14px;">
+        <div id="fb-login">
           <div style="font-size:14px;font-weight:600;margin-bottom:4px;">Propojit Facebook stránku</div>
-          <div style="font-size:13px;color:var(--text2);margin-bottom:16px;">Přihlas se svým Facebook účtem — zobrazí se stránky ke kterým máš přístup.</div>
-          <button class="btn btn-fb" onclick="doFbLogin()" style="width:100%;justify-content:center;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          <div style="font-size:13px;color:var(--tx2);margin-bottom:14px;">Přihlas se svým Facebook účtem.</div>
+          <button class="btn btn-fb" onclick="fbLogin()" style="width:100%;justify-content:center;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
             Přihlásit se přes Facebook
           </button>
-          <div style="font-size:11px;color:var(--text3);margin-top:10px;text-align:center;">Otevře se přihlašovací okno Facebooku</div>
         </div>
-
-        <!-- Step B: page picker -->
-        <div id="fb-step-pages" style="display:none;">
-          <div style="font-size:14px;font-weight:600;margin-bottom:12px;">Vyber stránku k publikaci</div>
-          <div id="fb-pages-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;max-height:240px;overflow-y:auto;"></div>
-          <button class="btn btn-ghost" style="font-size:12px;width:100%;justify-content:center;" onclick="fbLogout()">← Přihlásit se jiným účtem</button>
+        <div id="fb-pages" style="display:none;">
+          <div style="font-size:14px;font-weight:600;margin-bottom:10px;">Vyber stránku</div>
+          <div id="fb-plist" style="display:flex;flex-direction:column;gap:7px;margin-bottom:12px;max-height:220px;overflow-y:auto;"></div>
+          <button class="btn btn-gh" style="font-size:12px;" onclick="fbLogout()">← Jiný účet</button>
         </div>
-
-        <!-- Step C: connected -->
-        <div id="fb-step-connected" style="display:none;">
-          <div style="display:flex;align-items:center;gap:12px;">
-            <div class="avatar-circle" id="fb-avatar">SK</div>
+        <div id="fb-done" style="display:none;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div class="av" id="fb-av">SK</div>
             <div style="flex:1;">
-              <div style="font-size:13px;font-weight:600;" id="fb-page-name">Střelecký klub</div>
-              <div style="font-size:12px;color:var(--green);">✓ Stránka propojena</div>
+              <div style="font-size:13px;font-weight:600;" id="fb-pname">Stránka</div>
+              <div style="font-size:12px;color:var(--gr);">✓ Propojena</div>
             </div>
-            <button class="btn btn-ghost" style="font-size:12px;" onclick="fbLogout()">Odpojit</button>
+            <button class="btn btn-gh" style="font-size:12px;" onclick="fbLogout()">Odpojit</button>
           </div>
         </div>
       </div>
 
-      <!-- Visibility -->
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;">
-        <div style="font-size:14px;font-weight:600;margin-bottom:14px;">Nastavení viditelnosti</div>
-        <label class="radio-option"><input type="radio" name="visibility" value="OPEN" checked><div><div class="ro-title">Veřejná událost</div><div class="ro-sub">Viditelná pro všechny na Facebooku</div></div></label>
-        <label class="radio-option"><input type="radio" name="visibility" value="FRIENDS"><div><div class="ro-title">Přátelé stránky</div><div class="ro-sub">Vidí pouze sledující stránky</div></div></label>
-        <label class="radio-option"><input type="radio" name="visibility" value="UNLISTED"><div><div class="ro-title">Skrytá (jen pro sdílení)</div><div class="ro-sub">Jen přes přímý odkaz</div></div></label>
+      <!-- visibility -->
+      <div class="card" style="margin-bottom:14px;">
+        <div style="font-size:13px;font-weight:600;margin-bottom:11px;">Viditelnost události</div>
+        <label class="ropt"><input type="radio" name="vis" value="OPEN" checked><div><div class="rt">Veřejná</div><div class="rs">Vidí všichni na Facebooku</div></div></label>
+        <label class="ropt"><input type="radio" name="vis" value="FRIENDS"><div><div class="rt">Sledující stránky</div><div class="rs">Jen fanoušci stránky</div></div></label>
+        <label class="ropt"><input type="radio" name="vis" value="UNLISTED"><div><div class="rt">Skrytá</div><div class="rs">Jen přes přímý odkaz</div></div></label>
       </div>
 
-      <!-- Photo -->
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:20px;">
-        <div style="font-size:14px;font-weight:600;margin-bottom:10px;">Fotografie</div>
-        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;color:var(--text2);">
-          <input type="checkbox" id="use-invitation-img" checked style="accent-color:var(--accent);">
-          Použít obrázek pozvánky jako cover fotku
+      <!-- photo -->
+      <div class="card" style="margin-bottom:18px;">
+        <div style="font-size:13px;font-weight:600;margin-bottom:10px;">Fotografie</div>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--tx2);">
+          <input type="checkbox" id="use-img" checked style="accent-color:var(--acc);">
+          Použít pozvánku jako cover fotku
         </label>
       </div>
 
-      <button class="btn btn-fb" onclick="publishEvent()" style="width:100%;justify-content:center;padding:12px;">
-        📤 Publikovat událost na Facebook
+      <button class="btn btn-fb" onclick="publish()" style="width:100%;justify-content:center;padding:11px;">
+        📤 Publikovat událost
       </button>
     </div>
 
-    <!-- right preview -->
+    <!-- preview -->
     <div>
-      <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:10px;">Náhled Facebook události</div>
-      <div class="fb-card">
-        <div class="fb-header-bar">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-          <span id="fb-preview-page">Stránka klubu</span>
+      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--tx3);margin-bottom:8px;">Náhled</div>
+      <div class="fbcard">
+        <div class="fbhdr">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          <span id="pv-page">Stránka klubu</span>
         </div>
-        <div class="fb-cover-area" id="fb-cover-area">
-          <img id="fb-cover-img" src="" style="display:none;">
-          <span class="fb-cover-placeholder">Cover fotka z pozvánky</span>
+        <div class="fbcov" id="pv-cov">
+          <img id="pv-img" src="" style="display:none;">
+          <span id="pv-ph" style="color:rgba(255,255,255,.3);font-size:12px;">Cover fotka</span>
         </div>
-        <div class="fb-body-area">
-          <div class="fb-event-title" id="fb-preview-title">Název akce</div>
-          <div class="fb-meta-line"><span class="fb-meta-icon">📅</span><span id="fb-preview-date">Datum a čas</span></div>
-          <div class="fb-meta-line"><span class="fb-meta-icon">📍</span><span id="fb-preview-location">Místo konání</span></div>
-          <div class="fb-meta-line"><span class="fb-meta-icon">🎯</span><span id="fb-preview-discipline">Disciplína</span></div>
-          <div class="fb-meta-line"><span class="fb-meta-icon">💰</span><span id="fb-preview-fee">Startovné</span></div>
-          <div class="fb-desc" id="fb-preview-desc"></div>
+        <div class="fbbody">
+          <div class="fbtitle" id="pv-title">Název akce</div>
+          <div class="fbmeta"><span>📅</span><span id="pv-date">Datum</span></div>
+          <div class="fbmeta"><span>📍</span><span id="pv-loc">Místo</span></div>
+          <div class="fbmeta"><span>🎯</span><span id="pv-disc">Disciplína</span></div>
+          <div class="fbmeta"><span>💰</span><span id="pv-fee">Startovné</span></div>
+          <div class="fbdesc" id="pv-desc"></div>
         </div>
       </div>
     </div>
-
   </div>
 </div>
 
 </main>
+
+<!-- overlay -->
+<div class="overlay" id="ov">
+  <div class="spin"></div>
+  <div style="color:var(--tx2);font-size:14px;" id="ov-txt">Analyzuji…</div>
+  <div style="color:var(--tx3);font-size:12px;" id="ov-sub"></div>
 </div>
 
-<!-- Loading -->
-<div class="loading-overlay" id="loading">
-  <div class="spinner"></div>
-  <div class="loading-text" id="loading-text">Analyzuji pozvánku…</div>
-  <div class="loading-detail" id="loading-detail">Claude Vision rozpoznává text a strukturu</div>
-</div>
-
-<!-- Toast -->
+<!-- toast -->
 <div class="toast" id="toast"></div>
 
-<!-- Settings modal -->
-<div class="modal-backdrop" id="settings-modal">
+<!-- settings modal -->
+<div class="modal-bg" id="set-modal">
   <div class="modal">
-    <h2>⚙ Nastavení</h2>
-    <p>Anthropic API klíč je potřeba pro extrakci dat z pozvánky. Ukládá se pouze lokálně v prohlížeči.</p>
+    <h2>⚙ Nastavení API klíče</h2>
+    <p>Anthropic API klíč je potřeba pro analýzu pozvánky. Ukládá se pouze lokálně ve tvém prohlížeči.</p>
     <div style="margin-bottom:12px;">
-      <label style="font-size:12px;font-weight:500;color:var(--text2);display:block;margin-bottom:5px;">Anthropic API klíč</label>
-      <input type="password" id="api-key-input" placeholder="sk-ant-api03-...">
-      <div style="font-size:11px;color:var(--text3);margin-top:4px;">Získáš na console.anthropic.com → API Keys</div>
+      <label class="fl" style="margin-bottom:5px;">Anthropic API klíč</label>
+      <input type="password" id="key-in" placeholder="sk-ant-api03-...">
+      <div style="font-size:11px;color:var(--tx3);margin-top:4px;">Získáš na console.anthropic.com → API Keys</div>
     </div>
-    <div style="display:flex;gap:10px;">
-      <button class="btn btn-accent" onclick="saveSettings()">Uložit</button>
-      <button class="btn btn-ghost" onclick="closeSettings()">Zavřít</button>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-acc" onclick="saveKey()">Uložit</button>
+      <button class="btn btn-gh" onclick="closeSettings()">Zavřít</button>
     </div>
   </div>
 </div>
 
 <script>
-// ── CONSTANTS ──────────────────────────────────────────────
-const FB_APP_ID  = '1877064512815342';
-const FB_PAGE_ID = '207050239905819';
-const FB_API_VER = 'v21.0';
+// ── CONFIG ─────────────────────────────────────────────────
+const FB_APP  = '1877064512815342';
+const FB_PAGE = '207050239905819';
+const FB_VER  = 'v21.0';
 
 // ── STATE ──────────────────────────────────────────────────
-let currentStep = 1;
-let selectedFiles = [];
-let selectedFileIndex = 0;
-let extractedData = null;
-let fbConnected = false;
-let fbToken = '';
-let fbPageId = FB_PAGE_ID;
-let fbPageName = '';
-let apiKey = localStorage.getItem('anthropic_api_key') || '';
-let historyData = JSON.parse(localStorage.getItem('shooting_history') || '[]');
+let files = [], fileIdx = 0;
+let apiKey = '';
+let b64img = '';
+let fbOK = false, fbToken = '', fbPageId = FB_PAGE, fbPageName = '';
+let history = [];
 
-// ── FB SDK INIT ────────────────────────────────────────────
-window.fbAsyncInit = function() {
-  FB.init({ appId: FB_APP_ID, cookie: true, xfbml: false, version: FB_API_VER });
-  // Check if already logged in
-  FB.getLoginStatus(function(resp) {
-    if (resp.status === 'connected') {
-      loadFbPages(resp.authResponse.accessToken);
-    }
-  });
-};
-(function(d,s,id){
-  if(d.getElementById(id)) return;
-  var js=d.createElement(s); js.id=id;
-  js.src='https://connect.facebook.net/cs_CZ/sdk.js';
-  js.async=true; js.defer=true;
-  d.head.appendChild(js);
-}(document,'script','fb-sdk'));
+// ── INIT ───────────────────────────────────────────────────
+function init() {
+  // Load API key
+  try {
+    const k = localStorage.getItem('ant_key') || '';
+    apiKey = k.replace(/[^\x20-\x7E]/g, '').trim();
+  } catch(e) {}
+
+  // Load history
+  try { history = JSON.parse(localStorage.getItem('sh_hist') || '[]'); } catch(e) { history = []; }
+
+  // Load saved FB page
+  try {
+    const t = localStorage.getItem('fb_tok');
+    const id = localStorage.getItem('fb_pid');
+    const n = localStorage.getItem('fb_pname');
+    if (t && id && n) setFbConnected(id, n, t);
+  } catch(e) {}
+
+  // FB SDK
+  window.fbAsyncInit = function() {
+    FB.init({ appId: FB_APP, cookie: true, xfbml: false, version: FB_VER });
+    FB.getLoginStatus(r => { if (r.status === 'connected') loadPages(r.authResponse.accessToken); });
+  };
+  (function(d,s,id){ if(d.getElementById(id)) return;
+    var js=d.createElement(s); js.id=id;
+    js.src='https://connect.facebook.net/cs_CZ/sdk.js';
+    js.async=true; d.head.appendChild(js);
+  }(document,'script','fb-sdk'));
+}
+init();
 
 // ── NAVIGATION ─────────────────────────────────────────────
-function goStep(n) {
-  currentStep = n;
-  document.getElementById('step-upload').style.display   = n===1 ? 'block' : 'none';
-  document.getElementById('step-validate').style.display = n===2 ? 'block' : 'none';
-  document.getElementById('step-publish').style.display  = n===3 ? 'block' : 'none';
-  ['sp1','sp2','sp3'].forEach((id,i) => {
-    document.getElementById(id).className = 'step-pill' + (i+1===n ? ' active' : i+1<n ? ' done' : '');
+function go(n) {
+  [1,2,3].forEach(i => {
+    document.getElementById('s'+i).style.display = i===n ? 'block' : 'none';
+    const el = document.getElementById('sp'+i);
+    el.className = 'sp' + (i===n?' on':i<n?' dn':'');
   });
-  if (n===3) updateFbPreview();
+  if (n===3) updatePreview();
   window.scrollTo(0,0);
 }
 
-function switchMainTab(tab) {
-  document.getElementById('tab-upload').style.display  = tab==='upload'  ? 'block' : 'none';
-  document.getElementById('tab-history').style.display = tab==='history' ? 'block' : 'none';
-  document.querySelectorAll('.tabs .tab').forEach((el,i) => {
-    el.className = 'tab' + (['upload','history'][i]===tab ? ' active' : '');
-  });
-  if (tab==='history') renderHistory();
+function swTab(t) {
+  document.getElementById('t-upload').style.display  = t==='upload'  ? 'block' : 'none';
+  document.getElementById('t-history').style.display = t==='history' ? 'block' : 'none';
+  document.querySelectorAll('.tab').forEach((el,i) => el.className='tab'+((['upload','history'][i]===t)?' on':''));
+  if (t==='history') renderHistory();
 }
 
 // ── FILES ──────────────────────────────────────────────────
-const dropzone = document.getElementById('dropzone');
-dropzone.addEventListener('dragover',  e => { e.preventDefault(); dropzone.classList.add('drag-over'); });
-dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag-over'));
-dropzone.addEventListener('drop', e => { e.preventDefault(); dropzone.classList.remove('drag-over'); handleFiles(e.dataTransfer.files); });
+const dz = document.getElementById('dz');
+dz.addEventListener('dragover',  e => { e.preventDefault(); dz.classList.add('over'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('over'));
+dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('over'); onFiles(e.dataTransfer.files); });
 
-function handleFiles(files) {
-  selectedFiles = Array.from(files);
-  const container = document.getElementById('selected-files');
-  container.innerHTML = '';
-  selectedFileIndex = 0;
-  selectedFiles.forEach((file, i) => {
-    const thumb = document.createElement('div');
-    thumb.className = 'file-thumb' + (i===0 ? ' selected' : '');
-    thumb.onclick = () => selectFileThumb(i);
+function onFiles(fl) {
+  files = Array.from(fl);
+  fileIdx = 0;
+  const c = document.getElementById('thumbs');
+  c.innerHTML = '';
+  files.forEach((f,i) => {
+    const d = document.createElement('div');
+    d.style.cssText='width:90px;height:116px;border-radius:8px;border:1px solid var(--b2);overflow:hidden;position:relative;background:var(--sur2);cursor:pointer;flex-shrink:0;';
+    d.className = i===0 ? 'sel-thumb' : '';
+    if (i===0) d.style.borderColor='var(--acc)';
+    d.onclick = () => { fileIdx=i; document.querySelectorAll('.sel-thumb').forEach(x=>{x.style.borderColor='var(--b2)';x.className='';}); d.style.borderColor='var(--acc)'; d.className='sel-thumb'; };
     const img = document.createElement('img');
-    const reader = new FileReader();
-    reader.onload = e => { img.src = e.target.result; };
-    reader.readAsDataURL(file);
-    const check = document.createElement('div'); check.className='thumb-check'; check.textContent='✓';
-    const name  = document.createElement('div'); name.className='thumb-name';  name.textContent=file.name;
-    thumb.appendChild(img); thumb.appendChild(check); thumb.appendChild(name);
-    container.appendChild(thumb);
+    img.style.cssText='width:100%;height:78%;object-fit:cover;display:block;';
+    new FileReader().onload = e => img.src=e.target.result;
+    (new FileReader()).readAsDataURL(f); // hack — redo properly
+    const r = new FileReader(); r.onload = e => img.src=e.target.result; r.readAsDataURL(f);
+    const nm = document.createElement('div');
+    nm.style.cssText='padding:3px 5px;font-size:9px;color:var(--tx2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-top:1px solid var(--b);';
+    nm.textContent = f.name;
+    d.appendChild(img); d.appendChild(nm); c.appendChild(d);
   });
-  document.getElementById('upload-actions').style.display = selectedFiles.length ? 'flex' : 'none';
+  const btn = document.getElementById('upload-btns');
+  btn.style.display = files.length ? 'flex' : 'none';
 }
 
-function selectFileThumb(i) {
-  selectedFileIndex = i;
-  document.querySelectorAll('.file-thumb').forEach((el,j) => el.classList.toggle('selected', j===i));
-}
-
-function clearFiles() {
-  selectedFiles = [];
-  document.getElementById('selected-files').innerHTML = '';
-  document.getElementById('upload-actions').style.display = 'none';
-  document.getElementById('file-input').value = '';
+function clearF() {
+  files=[]; document.getElementById('thumbs').innerHTML='';
+  document.getElementById('upload-btns').style.display='none';
+  document.getElementById('fi').value='';
 }
 
 // ── EXTRACTION ─────────────────────────────────────────────
-async function startExtraction() {
-  if (!selectedFiles.length) return;
-  const rawKey = apiKey || localStorage.getItem('anthropic_api_key') || '';
-  const key = rawKey.replace(/[^\x20-\x7E]/g, '').trim();
-  if (!key) { showSettings(); showToast('Nejprve nastav Anthropic API klíč v nastavení ⚙.', 'error'); return; }
-  // Show first 12 chars in console for debugging
-  console.log('Using API key:', key.slice(0,12) + '...' + ' (length: ' + key.length + ')');
+async function extract() {
+  if (!files.length) return;
+  const key = apiKey || (localStorage.getItem('ant_key')||'').replace(/[^\x20-\x7E]/g,'').trim();
+  if (!key) { openSettings(); toast('Nejprve nastav Anthropic API klíč v ⚙.','er'); return; }
 
-  showLoading('Analyzuji pozvánku…', 'Claude Vision rozpoznává text a strukturu');
-  const file = selectedFiles[selectedFileIndex];
-  const b64  = await fileToBase64(file);
+  showOv('Analyzuji pozvánku…','Claude Vision rozpoznává text a strukturu');
+  const file = files[fileIdx];
+  b64img = await toB64(file);
 
-  const previewImg = document.getElementById('preview-img');
-  if (previewImg) { previewImg.src = b64; previewImg.style.display = 'block'; }
-  const previewPh = document.getElementById('preview-placeholder');
-  if (previewPh) previewPh.style.display = 'none';
-  const previewFn = document.getElementById('preview-filename');
-  if (previewFn) previewFn.textContent = file.name;
-  const coverImg = document.getElementById('fb-cover-img');
-  if (coverImg) coverImg.src = b64;
+  // Show preview
+  const pi = document.getElementById('prev-img');
+  pi.src = b64img; pi.style.display='block';
+  document.getElementById('prev-ph').style.display='none';
+  document.getElementById('prev-fn').textContent = file.name;
+  document.getElementById('pv-img').src = b64img;
 
   try {
-    const result = await callClaudeVision(key, b64, file.type);
-    extractedData = result;
-    fillForm(result);
-    hideLoading();
-    goStep(2);
-    showToast('Data úspěšně extrahována!', 'success');
+    const data = await callAPI(key, b64img, file.type);
+    fillForm(data);
+    hideOv();
+    go(2);
+    toast('Data úspěšně extrahována!','ok');
   } catch(e) {
-    hideLoading();
-    showToast('Chyba při extrakci: ' + e.message, 'error');
+    hideOv();
+    toast('Chyba: ' + e.message, 'er');
   }
 }
 
-async function reExtract() {
-  if (!selectedFiles.length) { goStep(1); return; }
-  await startExtraction();
-}
-
-async function callClaudeVision(key, b64, mimeType) {
-  // Prompt in plain ASCII to avoid ISO-8859-1 header encoding issues
+async function callAPI(key, b64, mime) {
   const prompt = [
-    'You are an expert at extracting structured data from Czech shooting event invitations.',
-    'Analyze the image and extract ALL available data. Return ONLY a valid JSON object (no markdown, no backticks):',
-    '{"name":"full event name","organizer":"organizer name","contact_name":null,"phone":null,"email":null,',
-    '"date":"DD.MM.YYYY","time_start":"HH:MM","time_end":null,"location":"shooting range and address",',
-    '"gps":null,"discipline":"Trap/Skeet/AT/etc","scope":"2x25 targets etc","entry_fee":"XXX CZK",',
-    '"registration":"registration conditions","training":null,"target_color":null,"ammo_available":null,',
-    '"catering":null,"prizes":null,',
-    '"description":"2-4 sentence Czech description suitable for a Facebook event post",',
-    '"confidence":{"name":0.0,"organizer":0.0,"date":0.0,"time_start":0.0,"location":0.0,',
-    '"phone":0.0,"email":0.0,"discipline":0.0,"entry_fee":0.0,"description":0.0}}',
-    'Confidence is 0.0-1.0. Missing fields = null. ONLY JSON, nothing else.',
-    'Write all extracted text values in the original Czech language as found in the image.',
-    'Generate the description field in Czech language.'
+    'You are an expert extracting structured data from Czech shooting event invitations.',
+    'Analyze the image and return ONLY a valid JSON object, no markdown, no backticks.',
+    'Schema: {"name":"full event name in Czech","organizer":"organizer","contact_name":null,',
+    '"phone":null,"email":null,"date":"DD.MM.YYYY","time_start":"HH:MM","time_end":null,',
+    '"location":"shooting range and address","gps":null,"discipline":"Trap/Skeet/AT/etc",',
+    '"scope":"2x25 targets etc","entry_fee":"amount in CZK","registration":"how to register",',
+    '"training":null,"target_color":null,"catering":null,"prizes":null,',
+    '"description":"2-4 sentence Czech description for Facebook event",',
+    '"confidence":{"name":0.95,"organizer":0.9,"date":0.95,"time_start":0.9,',
+    '"location":0.8,"phone":0.5,"email":0.5,"discipline":0.9,"entry_fee":0.9,"description":0.9}}',
+    'Set confidence 0.0-1.0 per field. Missing fields = null.',
+    'Keep all text values in original Czech. Generate description in Czech.'
   ].join(' ');
 
-  // Sanitize key — strip any non-ASCII characters that would break headers
-  const cleanKey = key.replace(/[^ -~]/g, '').trim();
-  const safeMime = (mimeType||'image/jpeg').replace('image/jpg','image/jpeg');
+  const cleanKey = key.replace(/[^\x20-\x7E]/g,'').trim();
+  const safeMime = mime.replace('image/jpg','image/jpeg');
 
-  let resp;
-  try {
-    resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': cleanKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-5',
-        max_tokens: 2000,
-        messages: [{ role:'user', content:[
-          { type:'image', source:{ type:'base64', media_type:safeMime, data:b64.split(',')[1] } },
-          { type:'text', text:prompt }
-        ]}]
-      })
-    });
-  } catch(e) { throw new Error('Network error: ' + e.message); }
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': cleanKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-5',
+      max_tokens: 2000,
+      messages: [{ role:'user', content:[
+        { type:'image', source:{ type:'base64', media_type:safeMime, data:b64.split(',')[1] }},
+        { type:'text', text:prompt }
+      ]}]
+    })
+  });
 
   if (!resp.ok) {
-    let msg = 'HTTP ' + resp.status;
-    try { const e = await resp.json(); msg = e.error?.message || msg;
-      if (resp.status===401) msg='Neplatný API klíč (401). Klíč začíná: ' + cleanKey.slice(0,12) + '… — zkontroluj v ⚙ zda je správně zkopírován.';
-      if (resp.status===429) msg='Překročen limit (429). Chvíli počkej.';
-    } catch(_) {}
-    throw new Error(msg);
+    const e = await resp.json().catch(()=>({}));
+    const m = e.error?.message || ('HTTP '+resp.status);
+    if (resp.status===401) throw new Error('Neplatný API klíč. Zkontroluj v ⚙. Detail: '+m);
+    if (resp.status===429) throw new Error('Překročen limit požadavků. Počkej chvíli.');
+    throw new Error(m);
   }
 
-  const data = await resp.json();
-  const raw = data.content?.[0]?.text;
-  if (!raw) throw new Error('API vrátilo prázdnou odpověď.');
-  const clean = raw.trim().replace(/^```json\s*\n?|^```\s*\n?|\n?```\s*$/g,'').trim();
+  const d = await resp.json();
+  const raw = d.content?.[0]?.text || '';
+  const clean = raw.trim().replace(/^```json\s*|^```\s*|\s*```$/g,'').trim();
   try { return JSON.parse(clean); }
   catch(_) {
     const m = clean.match(/\{[\s\S]*\}/);
     if (m) return JSON.parse(m[0]);
-    throw new Error('Nepodařilo se zparsovat odpověď.');
+    throw new Error('Nepodařilo se zparsovat odpověď API.');
   }
 }
 
 // ── FORM ───────────────────────────────────────────────────
-function confClass(v) { return v>=0.8 ? 'conf-high' : v>=0.5 ? 'conf-med' : 'conf-low'; }
-function confLabel(v) { return Math.round(v*100) + '%' + (v<0.5?' !':v<0.8?' ⚠':''); }
+function ccls(v){ return v>=.8?'cb-h':v>=.5?'cb-m':'cb-l'; }
+function clbl(v){ return Math.round(v*100)+'%'+(v<.5?' !':v<.8?' ⚠':''); }
+
+function badge(bid, fid, val) {
+  const el=document.getElementById(bid); if(!el) return;
+  if(val==null){el.className='cb';el.textContent='';return;}
+  el.className='cb '+ccls(val); el.textContent=clbl(val);
+  const f=document.getElementById(fid); if(f) f.style.borderColor=val<.5?'var(--rd)':'';
+}
 
 function fillForm(d) {
-  const set = (id,val) => { const el=document.getElementById(id); if(el) el.value=val||''; };
-  set('f-name',d.name); set('f-organizer',d.organizer); set('f-contact-name',d.contact_name);
-  set('f-phone',d.phone); set('f-email',d.email); set('f-date',d.date);
-  set('f-time',d.time_start||''); set('f-location',d.location); set('f-gps',d.gps);
-  set('f-discipline',d.discipline); set('f-scope',d.scope); set('f-fee',d.entry_fee);
-  set('f-registration',d.registration); set('f-training',d.training);
-  set('f-targets',d.target_color); set('f-description',d.description);
+  const s=(id,v)=>{const e=document.getElementById(id);if(e)e.value=v||'';};
+  s('f-name',d.name); s('f-org',d.organizer); s('f-contact',d.contact_name);
+  s('f-phone',d.phone); s('f-email',d.email); s('f-date',d.date);
+  s('f-time',d.time_start); s('f-loc',d.location); s('f-gps',d.gps);
+  s('f-disc',d.discipline); s('f-scope',d.scope); s('f-fee',d.entry_fee);
+  s('f-reg',d.registration); s('f-train',d.training);
+  s('f-targets',d.target_color); s('f-desc',d.description);
 
-  const c = d.confidence||{};
-  const badge = (bid,fid,key) => {
-    const el=document.getElementById(bid); if(!el) return;
-    const v=c[key]; if(v==null){el.className='conf-badge';el.textContent='';return;}
-    el.className='conf-badge '+confClass(v); el.textContent=confLabel(v);
-    const f=document.getElementById(fid); if(f) f.style.borderColor=v<0.5?'var(--red)':'';
-  };
-  badge('cf-name','f-name','name'); badge('cf-organizer','f-organizer','organizer');
-  badge('cf-date','f-date','date'); badge('cf-time','f-time','time_start');
-  badge('cf-location','f-location','location'); badge('cf-phone','f-phone','phone');
-  badge('cf-email','f-email','email'); badge('cf-discipline','f-discipline','discipline');
-  badge('cf-fee','f-fee','entry_fee'); badge('cf-desc','f-description','description');
+  const c=d.confidence||{};
+  badge('cf-name','f-name',c.name); badge('cf-org','f-org',c.organizer);
+  badge('cf-date','f-date',c.date); badge('cf-time','f-time',c.time_start);
+  badge('cf-loc','f-loc',c.location); badge('cf-phone','f-phone',c.phone);
+  badge('cf-email','f-email',c.email); badge('cf-disc','f-disc',c.discipline);
+  badge('cf-fee','f-fee',c.entry_fee); badge('cf-desc','f-desc',c.description);
 
-  const bars = document.getElementById('conf-bars');
-  if (!bars) return;
-  bars.innerHTML = '';
-  [['Název',c.name],['Datum',c.date],['Místo',c.location],['Disciplína',c.discipline],['Telefon',c.phone],['E-mail',c.email]]
+  const bars=document.getElementById('cbars'); bars.innerHTML='';
+  [['Název',c.name],['Datum',c.date],['Místo',c.location],['Disciplína',c.discipline],['Tel.',c.phone],['Email',c.email]]
     .filter(([,v])=>v!=null)
-    .forEach(([label,v])=>{
-      const pct=Math.round((v||0)*100);
-      const cls=v>=0.8?'':v>=0.5?' med':' low';
-      bars.innerHTML+=`<div class="conf-row"><span class="conf-label">${label}</span><div class="conf-bar-wrap"><div class="conf-bar${cls}" style="width:${pct}%"></div></div><span class="conf-pct">${pct}%</span></div>`;
+    .forEach(([l,v])=>{
+      const p=Math.round((v||0)*100);
+      const cl=v>=.8?'':v>=.5?' m':' l';
+      bars.innerHTML+=`<div class="cr"><span style="color:var(--tx3);width:60px;font-size:10px;">${l}</span><div class="crb"><div class="crbi${cl}" style="width:${p}%"></div></div><span style="font-size:10px;color:var(--tx3);width:28px;text-align:right">${p}%</span></div>`;
     });
 }
 
-// ── PUBLISH PREVIEW ────────────────────────────────────────
-function goPublish() { updateFbPreview(); goStep(3); }
+// ── PREVIEW ────────────────────────────────────────────────
+function goPublish() { updatePreview(); go(3); }
 
-function updateFbPreview() {
-  const g = id => document.getElementById(id)?.value||'';
-  document.getElementById('fb-preview-title').textContent    = g('f-name')||'Název akce';
-  document.getElementById('fb-preview-date').textContent     = (g('f-date')||'—')+(g('f-time')?' v '+g('f-time'):'');
-  document.getElementById('fb-preview-location').textContent = g('f-location')||'—';
-  document.getElementById('fb-preview-discipline').textContent = [g('f-discipline'),g('f-scope')].filter(Boolean).join(' · ')||'—';
-  document.getElementById('fb-preview-fee').textContent      = g('f-fee')||'—';
-  document.getElementById('fb-preview-desc').textContent     = g('f-description')||'';
-  const ci=document.getElementById('fb-cover-img'), ph=document.querySelector('.fb-cover-placeholder');
-  const use=document.getElementById('use-invitation-img')?.checked;
-  if(use && ci.src && ci.src!==window.location.href){ ci.style.display='block'; if(ph) ph.style.display='none'; }
-  else { ci.style.display='none'; if(ph) ph.style.display=''; }
-  if(fbPageName) document.getElementById('fb-preview-page').textContent=fbPageName;
+function updatePreview() {
+  const g=id=>document.getElementById(id)?.value||'';
+  document.getElementById('pv-title').textContent = g('f-name')||'Název akce';
+  document.getElementById('pv-date').textContent  = (g('f-date')||'—')+(g('f-time')?' v '+g('f-time'):'');
+  document.getElementById('pv-loc').textContent   = g('f-loc')||'—';
+  document.getElementById('pv-disc').textContent  = [g('f-disc'),g('f-scope')].filter(Boolean).join(' · ')||'—';
+  document.getElementById('pv-fee').textContent   = g('f-fee')||'—';
+  document.getElementById('pv-desc').textContent  = g('f-desc')||'';
+  if (fbPageName) document.getElementById('pv-page').textContent=fbPageName;
+  const ci=document.getElementById('pv-img'), ph=document.getElementById('pv-ph');
+  const use=document.getElementById('use-img')?.checked;
+  if(use && ci.src && ci.src!==location.href){ ci.style.display='block'; ph.style.display='none'; }
+  else { ci.style.display='none'; ph.style.display=''; }
 }
-document.getElementById('use-invitation-img')?.addEventListener('change', updateFbPreview);
+document.getElementById('use-img').addEventListener('change', updatePreview);
 
-// ── FACEBOOK OAUTH ─────────────────────────────────────────
-function fbShowStep(step) {
-  ['fb-step-login','fb-step-pages','fb-step-connected'].forEach(id => {
-    const el=document.getElementById(id);
-    if(el) el.style.display = id===step ? 'block' : 'none';
+// ── FACEBOOK ───────────────────────────────────────────────
+function fbShow(s) {
+  ['fb-login','fb-pages','fb-done'].forEach(id=>{
+    document.getElementById(id).style.display = id===s?'block':'none';
   });
 }
 
-function doFbLogin() {
-  if (!window.FB) { showToast('Facebook SDK se ještě načítá, zkus za chvíli.','error'); return; }
-  FB.login(function(resp) {
-    if (resp.authResponse) {
-      loadFbPages(resp.authResponse.accessToken);
-    } else {
-      showToast('Přihlášení zrušeno nebo se nezdařilo.', 'error');
-    }
+function fbLogin() {
+  if (!window.FB) { toast('FB SDK se načítá, zkus za chvíli.','er'); return; }
+  FB.login(r => {
+    if (r.authResponse) loadPages(r.authResponse.accessToken);
+    else toast('Přihlášení zrušeno.','er');
   }, { scope: 'pages_manage_posts,pages_manage_events,pages_read_engagement' });
 }
 
-function loadFbPages(userToken) {
-  showLoading('Načítám stránky…', 'Hledám Facebook stránky ke kterým máš přístup');
-  FB.api('/me/accounts', { access_token: userToken }, function(res) {
-    hideLoading();
-    if (!res || res.error) {
-      showToast('Nepodařilo se načíst stránky: ' + (res?.error?.message||'neznámá chyba'), 'error');
-      return;
-    }
-    if (!res.data || res.data.length === 0) {
-      showToast('Nenalezena žádná Facebook stránka. Máš administrátorský přístup?', 'error');
-      return;
-    }
-    const list = document.getElementById('fb-pages-list');
-    list.innerHTML = '';
-    res.data.forEach(page => {
-      const btn = document.createElement('button');
-      btn.className = 'btn';
-      btn.style.cssText = 'justify-content:flex-start;gap:10px;width:100%;text-align:left;';
-      btn.innerHTML = `<div class="avatar-circle" style="width:28px;height:28px;font-size:11px;flex-shrink:0;">${page.name.slice(0,2).toUpperCase()}</div><div><div style="font-size:13px;font-weight:500;">${page.name}</div><div style="font-size:11px;color:var(--text3);">ID: ${page.id}</div></div>`;
-      btn.onclick = () => selectPage(page.id, page.name, page.access_token);
-      list.appendChild(btn);
+function loadPages(userToken) {
+  showOv('Načítám stránky…','');
+  FB.api('/me/accounts', { access_token: userToken }, res => {
+    hideOv();
+    if (!res||res.error) { toast('Chyba: '+(res?.error?.message||'neznámá'),'er'); return; }
+    if (!res.data?.length) { toast('Nenalezena žádná stránka se správcovským přístupem.','er'); return; }
+    const list=document.getElementById('fb-plist'); list.innerHTML='';
+    res.data.forEach(p=>{
+      const b=document.createElement('button');
+      b.className='btn'; b.style.cssText='justify-content:flex-start;gap:8px;width:100%;text-align:left;';
+      b.innerHTML=`<div class="av" style="width:26px;height:26px;font-size:10px;">${p.name.slice(0,2).toUpperCase()}</div><div><div style="font-size:13px;font-weight:500;">${p.name}</div><div style="font-size:10px;color:var(--tx3);">ID: ${p.id}</div></div>`;
+      b.onclick=()=>setFbConnected(p.id,p.name,p.access_token);
+      list.appendChild(b);
     });
-    fbShowStep('fb-step-pages');
+    fbShow('fb-pages');
   });
 }
 
-function selectPage(pageId, pageName, pageToken) {
-  fbToken    = pageToken;
-  fbPageId   = pageId;
-  fbPageName = pageName;
-  fbConnected = true;
-  localStorage.setItem('fb_page_token', pageToken);
-  localStorage.setItem('fb_page_id',    pageId);
-  localStorage.setItem('fb_page_name',  pageName);
-  const nameEl=document.getElementById('fb-page-name');
-  const avEl  =document.getElementById('fb-avatar');
-  if(nameEl) nameEl.textContent = pageName;
-  if(avEl)   avEl.textContent   = pageName.slice(0,2).toUpperCase();
-  fbShowStep('fb-step-connected');
-  const pp=document.getElementById('fb-preview-page');
-  if(pp) pp.textContent = pageName;
-  showToast('Stránka „' + pageName + '" propojena!', 'success');
+function setFbConnected(id,name,token) {
+  fbToken=token; fbPageId=id; fbPageName=name; fbOK=true;
+  try { localStorage.setItem('fb_tok',token); localStorage.setItem('fb_pid',id); localStorage.setItem('fb_pname',name); } catch(e){}
+  document.getElementById('fb-pname').textContent=name;
+  document.getElementById('fb-av').textContent=name.slice(0,2).toUpperCase();
+  fbShow('fb-done');
+  document.getElementById('pv-page').textContent=name;
+  toast('Stránka „'+name+'" propojena!','ok');
 }
 
 function fbLogout() {
-  fbConnected=false; fbToken=''; fbPageId=FB_PAGE_ID; fbPageName='';
-  localStorage.removeItem('fb_page_token');
-  localStorage.removeItem('fb_page_id');
-  localStorage.removeItem('fb_page_name');
-  if(window.FB) FB.logout(()=>{});
-  fbShowStep('fb-step-login');
+  fbOK=false; fbToken=''; fbPageId=FB_PAGE; fbPageName='';
+  try { ['fb_tok','fb_pid','fb_pname'].forEach(k=>localStorage.removeItem(k)); } catch(e){}
+  try { if(window.FB) FB.logout(()=>{}); } catch(e){}
+  fbShow('fb-login');
 }
 
 // ── PUBLISH ────────────────────────────────────────────────
-async function publishEvent() {
-  if (!fbConnected) { showToast('Nejprve se přihlas přes Facebook.', 'error'); return; }
-  const g = id => document.getElementById(id)?.value||'';
-  const name    = g('f-name');
-  const dateStr = g('f-date');
-  if (!name||!dateStr) { showToast('Název a datum jsou povinné.', 'error'); return; }
+async function publish() {
+  if (!fbOK) { toast('Nejprve se přihlas přes Facebook.','er'); return; }
+  const g=id=>document.getElementById(id)?.value||'';
+  const name=g('f-name'), dateStr=g('f-date');
+  if(!name||!dateStr){ toast('Název a datum jsou povinné.','er'); return; }
 
-  showLoading('Publikuji na Facebook…', 'Odesílám data do Graph API');
-  const timeVal = g('f-time')||'09:00';
-  const [dd,mm,yyyy] = dateStr.split('.').map(s=>s.trim());
-  const startISO = `${yyyy}-${mm?.padStart(2,'0')}-${dd?.padStart(2,'0')}T${timeVal.padStart(5,'0')}:00+0200`;
-  const endISO   = `${yyyy}-${mm?.padStart(2,'0')}-${dd?.padStart(2,'0')}T18:00:00+0200`;
-  const visibility = document.querySelector('input[name="visibility"]:checked')?.value||'OPEN';
-
-  const description = [
-    g('f-description'),
-    g('f-discipline') ? `🎯 Disciplína: ${g('f-discipline')}` : '',
-    g('f-scope')      ? `Rozsah: ${g('f-scope')}` : '',
-    g('f-fee')        ? `💰 Startovné: ${g('f-fee')}` : '',
-    g('f-registration')? `📝 Přihlášky: ${g('f-registration')}` : '',
-    g('f-training')   ? `🏋 Trénink: ${g('f-training')}` : '',
-    g('f-phone')      ? `📞 Info: ${g('f-phone')}` : '',
-    g('f-email')      ? `✉️ ${g('f-email')}` : '',
+  showOv('Publikuji na Facebook…','Odesílám do Graph API');
+  const t=g('f-time')||'09:00';
+  const [dd,mm,yyyy]=dateStr.split('.').map(s=>s.trim());
+  const pad=s=>String(s).padStart(2,'0');
+  const startISO=`${yyyy}-${pad(mm)}-${pad(dd)}T${t.padStart(5,'0')}:00+0200`;
+  const endISO  =`${yyyy}-${pad(mm)}-${pad(dd)}T18:00:00+0200`;
+  const vis=document.querySelector('input[name="vis"]:checked')?.value||'OPEN';
+  const desc=[
+    g('f-desc'),
+    g('f-disc')?'Disciplina: '+g('f-disc'):'',
+    g('f-scope')?'Rozsah: '+g('f-scope'):'',
+    g('f-fee')?'Startovne: '+g('f-fee'):'',
+    g('f-reg')?'Prihlaseni: '+g('f-reg'):'',
+    g('f-train')?'Trenink: '+g('f-train'):'',
+    g('f-phone')?'Tel: '+g('f-phone'):'',
+    g('f-email')||'',
   ].filter(Boolean).join('\n');
 
-  const payload = { name, description, start_time:startISO, end_time:endISO,
-    location:g('f-location'), privacy_type:visibility, access_token:fbToken };
-
   try {
-    const resp = await fetch(`https://graph.facebook.com/${FB_API_VER}/${fbPageId}/events`, {
-      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)
+    const r=await fetch(`https://graph.facebook.com/${FB_VER}/${fbPageId}/events`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name,description:desc,start_time:startISO,end_time:endISO,
+        location:g('f-loc'),privacy_type:vis,access_token:fbToken})
     });
-    const result = await resp.json();
-    hideLoading();
-    if (result.id) {
-      historyData.unshift({ id:result.id, name, date:dateStr,
-        published_at:new Date().toLocaleDateString('cs-CZ'),
-        fb_url:`https://www.facebook.com/events/${result.id}`, status:'published' });
-      localStorage.setItem('shooting_history', JSON.stringify(historyData.slice(0,50)));
-      document.getElementById('step-publish').innerHTML = `
-        <div style="max-width:600px;margin:60px auto;text-align:center;">
-          <div style="font-size:56px;margin-bottom:20px;">🎉</div>
-          <h2 style="font-family:'Playfair Display',serif;font-size:26px;margin-bottom:10px;">Událost publikována!</h2>
-          <p style="color:var(--text2);margin-bottom:24px;">${name} byla úspěšně publikována na Facebooku.</p>
-          <div style="background:var(--green-bg);border:1px solid rgba(74,140,92,0.3);border-radius:var(--radius-lg);padding:20px 24px;text-align:left;margin-bottom:24px;">
-            <div class="success-title">Událost je živá</div>
-            <div class="success-sub">Facebook Event ID: ${result.id}</div>
-            <a class="success-link" href="https://www.facebook.com/events/${result.id}" target="_blank">Otevřít na Facebooku →</a>
+    const res=await r.json(); hideOv();
+    if(res.id){
+      history.unshift({id:res.id,name,date:dateStr,at:new Date().toLocaleDateString('cs-CZ'),
+        url:`https://www.facebook.com/events/${res.id}`,status:'published'});
+      try{localStorage.setItem('sh_hist',JSON.stringify(history.slice(0,50)));}catch(e){}
+      document.getElementById('s3').innerHTML=`
+        <div style="max-width:520px;margin:50px auto;text-align:center;">
+          <div style="font-size:52px;margin-bottom:16px;">🎉</div>
+          <div style="font-size:22px;font-weight:700;margin-bottom:8px;">Událost publikována!</div>
+          <p style="color:var(--tx2);margin-bottom:20px;">${name}</p>
+          <div style="background:var(--gr-bg);border:1px solid rgba(74,140,92,.3);border-radius:var(--rl);padding:16px 20px;text-align:left;margin-bottom:20px;">
+            <div style="font-size:14px;font-weight:600;color:var(--gr);">Událost je živá</div>
+            <div style="font-size:12px;color:var(--tx2);margin:3px 0;">ID: ${res.id}</div>
+            <a href="https://www.facebook.com/events/${res.id}" target="_blank" style="color:#1877F2;font-size:13px;">Otevřít na Facebooku →</a>
           </div>
-          <button class="btn btn-accent" onclick="location.reload()">Zpracovat další pozvánku</button>
+          <button class="btn btn-acc" onclick="location.reload()">Zpracovat další pozvánku</button>
         </div>`;
     } else {
-      showToast('Chyba FB API: ' + (result.error?.message||JSON.stringify(result)), 'error');
+      toast('FB chyba: '+(res.error?.message||JSON.stringify(res)),'er');
     }
-  } catch(e) { hideLoading(); showToast('Síťová chyba: ' + e.message, 'error'); }
+  } catch(e){ hideOv(); toast('Chyba: '+e.message,'er'); }
 }
 
 // ── DRAFT & HISTORY ────────────────────────────────────────
 function saveDraft() {
-  const g = id => document.getElementById(id)?.value||'';
-  const formData = {
-    name:g('f-name'), organizer:g('f-organizer'), contact_name:g('f-contact-name'),
-    phone:g('f-phone'), email:g('f-email'), date:g('f-date'), time_start:g('f-time'),
-    location:g('f-location'), gps:g('f-gps'), discipline:g('f-discipline'),
-    scope:g('f-scope'), entry_fee:g('f-fee'), registration:g('f-registration'),
-    training:g('f-training'), target_color:g('f-targets'), description:g('f-description')
-  };
-  historyData.unshift({
-    id: 'draft_'+Date.now(),
-    name: g('f-name'),
-    date: g('f-date'),
-    published_at: new Date().toLocaleDateString('cs-CZ'),
-    fb_url: null,
-    status: 'draft',
-    formData: formData
-  });
-  localStorage.setItem('shooting_history', JSON.stringify(historyData.slice(0,50)));
-  showToast('Uloženo jako koncept.', 'success');
+  const g=id=>document.getElementById(id)?.value||'';
+  const fd={name:g('f-name'),organizer:g('f-org'),contact_name:g('f-contact'),
+    phone:g('f-phone'),email:g('f-email'),date:g('f-date'),time_start:g('f-time'),
+    location:g('f-loc'),gps:g('f-gps'),discipline:g('f-disc'),scope:g('f-scope'),
+    entry_fee:g('f-fee'),registration:g('f-reg'),training:g('f-train'),
+    target_color:g('f-targets'),description:g('f-desc')};
+  history.unshift({id:'d_'+Date.now(),name:g('f-name'),date:g('f-date'),
+    at:new Date().toLocaleDateString('cs-CZ'),url:null,status:'draft',fd});
+  try{localStorage.setItem('sh_hist',JSON.stringify(history.slice(0,50)));}catch(e){}
+  toast('Uloženo jako koncept.','ok');
 }
 
 function loadDraft(id) {
-  const record = historyData.find(r => r.id === id);
-  if (!record || !record.formData) { showToast('Data konceptu nejsou k dispozici.', 'error'); return; }
-  const d = record.formData;
-  const set = (elId, val) => { const el=document.getElementById(elId); if(el) el.value=val||''; };
-  set('f-name', d.name); set('f-organizer', d.organizer); set('f-contact-name', d.contact_name);
-  set('f-phone', d.phone); set('f-email', d.email); set('f-date', d.date);
-  set('f-time', d.time_start); set('f-location', d.location); set('f-gps', d.gps);
-  set('f-discipline', d.discipline); set('f-scope', d.scope); set('f-fee', d.entry_fee);
-  set('f-registration', d.registration); set('f-training', d.training);
-  set('f-targets', d.target_color); set('f-description', d.description);
-  goStep(2);
-  showToast('Koncept načten — zkontroluj data.', 'success');
+  const r=history.find(x=>x.id===id);
+  if(!r?.fd){toast('Data konceptu nejsou k dispozici.','er');return;}
+  const s=(eid,v)=>{const e=document.getElementById(eid);if(e)e.value=v||'';};
+  const d=r.fd;
+  s('f-name',d.name);s('f-org',d.organizer);s('f-contact',d.contact_name);
+  s('f-phone',d.phone);s('f-email',d.email);s('f-date',d.date);s('f-time',d.time_start);
+  s('f-loc',d.location);s('f-gps',d.gps);s('f-disc',d.discipline);s('f-scope',d.scope);
+  s('f-fee',d.entry_fee);s('f-reg',d.registration);s('f-train',d.training);
+  s('f-targets',d.target_color);s('f-desc',d.description);
+  go(2); toast('Koncept načten.','ok');
 }
 
 function renderHistory() {
-  const tbody = document.getElementById('history-body');
-  if (!historyData.length) {
-    tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:32px;">Zatím žádné záznamy</td></tr>';
-    return;
-  }
-  tbody.innerHTML = historyData.map(r=>`<tr>
+  const tb=document.getElementById('htbody');
+  if(!history.length){tb.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--tx3);padding:28px;">Žádné záznamy</td></tr>';return;}
+  tb.innerHTML=history.map(r=>`<tr>
     <td>${r.name||'—'}</td>
-    <td style="color:var(--text2)">${r.date||'—'}</td>
-    <td><span class="status-tag ${r.status==='published'?'st-published':'st-draft'}">${r.status==='published'?'✓ Publikováno':'⌛ Koncept'}</span></td>
-    <td style="color:var(--text2)">${r.published_at||'—'}</td>
-    <td>${r.fb_url
-      ? `<a href="${r.fb_url}" target="_blank" style="color:#1877F2;text-decoration:none;font-size:13px;">Otevřít ↗</a>`
-      : (r.formData
-        ? `<button class="btn" style="font-size:12px;padding:5px 12px;" onclick="loadDraft('${r.id}')">✏️ Upravit</button>`
-        : '—')
-    }</td>
+    <td style="color:var(--tx2)">${r.date||'—'}</td>
+    <td><span class="stag ${r.status==='published'?'s-pub':'s-dft'}">${r.status==='published'?'✓ Publikováno':'⌛ Koncept'}</span></td>
+    <td>${r.url?`<a href="${r.url}" target="_blank" style="color:#1877F2;font-size:12px;">Otevřít ↗</a>`
+      :r.fd?`<button class="btn" style="font-size:11px;padding:4px 10px;" onclick="loadDraft('${r.id}')">✏️ Upravit</button>`:'—'}</td>
   </tr>`).join('');
 }
 
 // ── UTILS ──────────────────────────────────────────────────
-function fileToBase64(file) {
-  return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(file); });
+function toB64(file){ return new Promise((ok,err)=>{ const r=new FileReader(); r.onload=e=>ok(e.target.result); r.onerror=err; r.readAsDataURL(file); }); }
+function showOv(t,s){ document.getElementById('ov-txt').textContent=t; document.getElementById('ov-sub').textContent=s; document.getElementById('ov').classList.add('on'); }
+function hideOv(){ document.getElementById('ov').classList.remove('on'); }
+function toast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast on'+(type?' '+type:'');
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('on'),4500);
 }
-function showLoading(text,detail) { document.getElementById('loading-text').textContent=text; document.getElementById('loading-detail').textContent=detail; document.getElementById('loading').classList.add('show'); }
-function hideLoading() { document.getElementById('loading').classList.remove('show'); }
-function showToast(msg,type='') { const t=document.getElementById('toast'); t.textContent=msg; t.className='toast show'+(type?' '+type:''); clearTimeout(t._timer); t._timer=setTimeout(()=>t.classList.remove('show'),4000); }
-function showSettings() { document.getElementById('settings-modal').classList.add('show'); document.getElementById('api-key-input').value=apiKey; }
-function closeSettings() { document.getElementById('settings-modal').classList.remove('show'); }
-function saveSettings() {
-  // Strip ALL non-printable and non-ASCII chars that break HTTP headers
-  apiKey = document.getElementById('api-key-input').value
-    .replace(/[^\x20-\x7E]/g, '')
-    .trim();
-  if (!apiKey) { showToast('API klíč nesmí být prázdný.', 'error'); return; }
-  localStorage.setItem('anthropic_api_key', apiKey);
+function openSettings(){ document.getElementById('set-modal').classList.add('on'); document.getElementById('key-in').value=apiKey; }
+function closeSettings(){ document.getElementById('set-modal').classList.remove('on'); }
+function saveKey(){
+  apiKey=document.getElementById('key-in').value.replace(/[^\x20-\x7E]/g,'').trim();
+  if(!apiKey){toast('Klíč nesmí být prázdný.','er');return;}
+  try{localStorage.setItem('ant_key',apiKey);}catch(e){}
   closeSettings();
-  showToast('API klíč uložen: ' + apiKey.slice(0,12) + '…', 'success');
+  toast('Klíč uložen: '+apiKey.slice(0,14)+'…','ok');
 }
-
-// Restore saved page from localStorage
-window.addEventListener('DOMContentLoaded', () => {
-  const savedToken = localStorage.getItem('fb_page_token');
-  const savedId    = localStorage.getItem('fb_page_id');
-  const savedName  = localStorage.getItem('fb_page_name');
-  if (savedToken && savedId && savedName) {
-    selectPage(savedId, savedName, savedToken);
-  }
-});
 </script>
 </body>
 </html>
